@@ -18,11 +18,9 @@ namespace OnlineTesty_Library.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public StudentGroup StudentGroupName { get; set; }
+        public string StudentGroupName { get; set; }
 
         [Required]
-        public DateTime StartTime { get; set; }
-        [Required]
-        public DateTime EndTime { get; set; }
+        public string ExamStatus { get; set; } 
     }
 }

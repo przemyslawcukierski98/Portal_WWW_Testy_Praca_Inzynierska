@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineTesty_Library.Contexts;
 
 namespace OnlineTesty_Library.Migrations
 {
     [DbContext(typeof(EFDatabaseContext))]
-    partial class EFDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211106134202_migration_06_11_2021")]
+    partial class migration_06_11_2021
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,10 +41,12 @@ namespace OnlineTesty_Library.Migrations
                     b.Property<string>("ProffesorID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StudentGroupName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("StudentGroupNameID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("StudentGroupNameID");
 
                     b.ToTable("Exams");
                 });
@@ -102,6 +106,15 @@ namespace OnlineTesty_Library.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("StudentGroups");
+                });
+
+            modelBuilder.Entity("OnlineTesty_Library.Models.Exam", b =>
+                {
+                    b.HasOne("OnlineTesty_Library.Models.StudentGroup", "StudentGroupName")
+                        .WithMany()
+                        .HasForeignKey("StudentGroupNameID");
+
+                    b.Navigation("StudentGroupName");
                 });
 #pragma warning restore 612, 618
         }
