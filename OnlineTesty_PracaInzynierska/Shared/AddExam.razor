@@ -1,0 +1,43 @@
+﻿@page "/add-exam" 
+@using OnlineTesty_Library.Models
+@using Syncfusion.Blazor.Calendars
+@inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
+@inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService 
+
+<h3>Dodaj egzamin</h3>
+
+<EditForm Model="@exam" OnValidSubmit="SubmitExam">
+    <div class="form-group">
+        <label for="name">Tytuł egzaminu</label>
+        <InputText id="name" @bind-Value="exam.Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="name">Opis egzaminu</label>
+        <InputText id="name" @bind-Value="exam.Description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="name">Grupa studencka</label>
+        <InputSelect id="student-group" @bind-Value="exam.StudentGroupName">
+            @foreach (var item in StudentGroupsService.FindAll())
+            {
+                <option value="@item.Name">@item.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="name">Rozpoczęcie egzaminu</label><br>
+        <InputDate id="start-date" @bind-Value="exam.StartTime" />
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Dodaj grupę</button>
+</EditForm>
+
+@code {
+    private Exam exam = new Exam();
+
+    void SubmitExam()
+    {
+        var result = ExamService.Create(exam);
+    }
+}

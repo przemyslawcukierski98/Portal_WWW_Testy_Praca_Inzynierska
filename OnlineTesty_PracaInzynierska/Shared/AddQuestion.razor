@@ -1,0 +1,14 @@
+﻿@page "/add-question"
+@using OnlineTesty_Library.Models
+@inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService 
+
+<h3>Dodaj pytanie do egzaminu</h3>
+
+@code {
+    private ExamQuestion examQuestion = new ExamQuestion();
+
+    void SubmitExamQuestion()
+    {
+        var result = ExamQuestionsService.Create(examQuestion);
+    }
+}

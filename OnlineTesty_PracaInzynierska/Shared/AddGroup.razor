@@ -1,0 +1,23 @@
+﻿@page "/add-student-group"
+@using OnlineTesty_Library.Models
+@inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupService
+
+<h3>Dodaj grupę studencką</h3>
+
+<EditForm Model="@studentGroup" OnValidSubmit="SubmitStudentGroup">
+    <div class="form-group">
+        <label for="name">Nazwa grupy</label>
+        <InputText id="name" @bind-Value="studentGroup.Name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj grupę</button>
+</EditForm>
+
+@code
+{
+    private StudentGroup studentGroup = new StudentGroup();
+
+    void SubmitStudentGroup()
+    {
+        var result = StudentGroupService.Create(studentGroup);
+    }
+}
