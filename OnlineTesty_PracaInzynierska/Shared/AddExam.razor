@@ -16,7 +16,7 @@
         <InputText id="name" @bind-Value="exam.Description" class="form-control" />
     </div>
     <div class="form-group">
-        <label for="name">Grupa studencka</label>
+        <label for="name">Grupa studencka</label><br />
         <InputSelect id="student-group" @bind-Value="exam.StudentGroupName">
             @foreach (var item in StudentGroupsService.FindAll())
             {
@@ -33,6 +33,7 @@
 
     void SubmitExam()
     {
+        exam.ExamStatus = "Utworzony";
         var result = ExamService.Create(exam);
     }
 }
