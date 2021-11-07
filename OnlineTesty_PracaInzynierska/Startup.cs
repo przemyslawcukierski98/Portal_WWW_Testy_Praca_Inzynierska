@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Syncfusion.Blazor;
+using Blazored.LocalStorage;
 
 namespace OnlineTesty_PracaInzynierska
 {
@@ -53,6 +54,8 @@ namespace OnlineTesty_PracaInzynierska
             services.AddTransient<IExamRepositories, ExamRepositories>();
             services.AddTransient<IExamQuestionsRepositories, ExamQuestionsRepositories>();
             services.AddTransient<IStudentGroupsRepositories, StudentGroupsRepositories>();
+
+            services.AddBlazoredLocalStorage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,6 +3,7 @@
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService 
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService sessionStorage
 
 <h3>Dodaj egzamin</h3>
 
@@ -35,6 +36,8 @@
     {
         exam.ExamStatus = "Utworzony";
         var result = ExamService.Create(exam);
+
+        sessionStorage.SetItemAsync("idExam", exam.ID);
 
         NavigationManager.NavigateTo("add-question");
     }
