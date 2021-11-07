@@ -2,6 +2,7 @@
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService 
+@inject NavigationManager NavigationManager
 
 <h3>Dodaj egzamin</h3>
 
@@ -34,5 +35,7 @@
     {
         exam.ExamStatus = "Utworzony";
         var result = ExamService.Create(exam);
+
+        NavigationManager.NavigateTo("add-question");
     }
 }

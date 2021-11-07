@@ -3,6 +3,42 @@
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService 
 
 <h3>Dodaj pytanie do egzaminu</h3>
+<EditForm Model="@examQuestion" OnValidSubmit="SubmitExamQuestion">
+    <div class="form-group">
+        <label for="question-number">Numer pytania</label>
+        <InputNumber id="question-number" @bind-Value="examQuestion.Order" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="question">Treść pytania</label>
+        <InputText id="question" @bind-Value="examQuestion.Question" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="description">Dodatkowy opis pytania</label>
+        <InputText id="description" @bind-Value="examQuestion.AdditiondalDescription" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="answer-a">Odpowiedź A</label>
+        <InputText id="answer-a" @bind-Value="examQuestion.AnswerA" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="answer-b">Odpowiedź B</label>
+        <InputText id="answer-b" @bind-Value="examQuestion.AnswerB" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="answer-c">Odpowiedź C</label>
+        <InputText id="answer-c" @bind-Value="examQuestion.AnswerC" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="answer-d">Odpowiedź D</label>
+        <InputText id="answer-d" @bind-Value="examQuestion.AnswerD" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="correct-answer">Poprawna odpowiedź</label>
+        <InputText id="answer-correct" @bind-Value="examQuestion.CorrectAnswerChar" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Dodaj pytanie</button>
+</EditForm>
 
 @code {
     private ExamQuestion examQuestion = new ExamQuestion();

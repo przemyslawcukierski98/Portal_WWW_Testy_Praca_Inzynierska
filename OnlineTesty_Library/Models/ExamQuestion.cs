@@ -22,6 +22,7 @@ namespace OnlineTesty_Library.Models
         public string AnswerC { get; set; }
         public string AnswerD { get; set; }
         public string CorrectAnswerChar { get; set; }
+
         public Guid ExamID { get; set; }
     }
 }
