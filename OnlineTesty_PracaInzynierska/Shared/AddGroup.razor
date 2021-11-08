@@ -2,6 +2,8 @@
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupService
 
+@attribute [Authorize(Roles = "Lecturer")]
+
 <h3>Dodaj grupę studencką</h3>
 
 <EditForm Model="@studentGroup" OnValidSubmit="SubmitStudentGroup">

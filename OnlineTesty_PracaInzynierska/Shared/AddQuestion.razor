@@ -3,6 +3,8 @@
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
 
+@attribute [Authorize(Roles = "Lecturer")]
+
 <h3>Dodaj pytanie do egzaminu</h3>
 <EditForm Model="@examQuestion" OnValidSubmit="SubmitExamQuestion">
     <div class="form-group">

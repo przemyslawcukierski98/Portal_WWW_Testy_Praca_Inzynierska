@@ -8,31 +8,41 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Strona główna
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="assigned-exams">
-                <span class="oi oi-arrow-circle-right" aria-hidden="true"></span> Przypisane egzaminy
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="solved-exams">
-                <span class="oi oi-pencil" aria-hidden="true"></span> Do sprawdzenia
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="evaluated-exams">
-                <span class="oi oi-check" aria-hidden="true"></span> Ocenione egzaminy
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="add-exam">
-                <span class="oi oi-plus" aria-hidden="true"></span> Utwórz nowy egzamin
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="add-student-group">
-                <span class="oi oi-person" aria-hidden="true"></span> Dodaj grupę studencką
-            </NavLink>
-        </li>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="assigned-exams">
+                    <span class="oi oi-arrow-circle-right" aria-hidden="true"></span> Przypisane egzaminy
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="solved-exams">
+                    <span class="oi oi-pencil" aria-hidden="true"></span> Do sprawdzenia
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="evaluated-exams">
+                    <span class="oi oi-check" aria-hidden="true"></span> Ocenione egzaminy
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="add-exam">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Utwórz nowy egzamin
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="add-student-group">
+                    <span class="oi oi-person" aria-hidden="true"></span> Dodaj grupę studencką
+                </NavLink>
+            </li>
+        </AuthorizeView>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="student-groups">
                 <span class="oi oi-people" aria-hidden="true"></span> Grupy studenckie

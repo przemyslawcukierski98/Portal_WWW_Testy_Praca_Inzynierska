@@ -5,6 +5,8 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
 
+@attribute [Authorize(Roles = "Lecturer")]
+
 <h3>Dodaj egzamin</h3>
 
 <EditForm Model="@exam" OnValidSubmit="SubmitExam">

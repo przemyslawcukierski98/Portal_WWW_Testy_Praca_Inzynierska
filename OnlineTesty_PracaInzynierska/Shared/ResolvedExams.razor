@@ -1,4 +1,6 @@
-﻿@page "/solved-exams" 
+﻿@page "/solved-exams"
+
+@attribute [Authorize(Roles = "Lecturer")]
 
 <h3>Rozwiązane egzaminy</h3>
 
