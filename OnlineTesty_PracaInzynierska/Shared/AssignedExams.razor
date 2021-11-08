@@ -1,9 +1,74 @@
 ﻿@page "/assigned-exams"
+@using OnlineTesty_Library.Models
+@inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService 
 
 @attribute [Authorize(Roles = "Lecturer")]
 
 <h3>Przypisane egzaminy</h3>
+<br />
+
+<style>
+    .list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .group-record {
+        border: 1px solid #ddd;
+        margin-top: -1px; /* Prevent double borders */
+        background-color: white;
+        color: black;
+        padding: 12px;
+    }
+
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    .details-button {
+        background-color: #008CBA;
+        color: white;
+        border: 2px solid #008CBA;
+    }
+
+    .details-button:hover {
+        background-color: white;
+        color: black;
+    }
+
+    .remove-button {
+        background-color: #f44336;
+        color: white;
+        border: 2px solid #f44336;
+    }
+
+    .remove-button:hover {
+        background-color: white;
+        color: black;
+    }
+</style>
+
+<ul class="list">
+    @foreach (var exam in ExamsService.FindAll())
+    {
+        <li class="group-record">@exam.Name  
+             <button class="details-button">Szczegóły</button>
+             <button class="remove-button">Usuń</button>
+        </li>
+    }
+</ul>
 
 @code {
-
+    
 }
