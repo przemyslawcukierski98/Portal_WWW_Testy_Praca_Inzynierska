@@ -48,17 +48,26 @@ namespace OnlineTesty_Library.Repositories
 
         public IEnumerable<Exam> FindAssignedExamsForLecturer()
         {
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony");
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony")
+                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
         }
 
         public IEnumerable<Exam> FindResolvedExamsForLecturer()
         {
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Rozwiązany");
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Rozwiązany")
+                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
         }
 
         public IEnumerable<Exam> FindEvaluatedExamsForLecturer()
         {
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Oceniony");
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Oceniony")
+                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
         }
 
         public Exam Read(Guid? ID)
