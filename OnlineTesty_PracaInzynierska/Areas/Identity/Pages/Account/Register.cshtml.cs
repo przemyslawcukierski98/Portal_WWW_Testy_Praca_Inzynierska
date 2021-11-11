@@ -45,20 +45,20 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Adres e-mail jest polem wymaganym")]
+            [EmailAddress(ErrorMessage = "Niepoprawny format adresu e-mail")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Hasło jest polem wymaganym")]
+            [RegularExpression(@"^(?=.*[a - z])(?=.*[A - Z])(?=.*\d).{8, 15}$", ErrorMessage = "Hasło musi zawierać od 8 do 15 znaków, jedną dużą i małą literę oraz znak specjalny")]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Wprowadzone hasła różnią się od siebie")]
             public string ConfirmPassword { get; set; }
         }
 

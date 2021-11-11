@@ -42,11 +42,11 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Adres e-mail jest polem wymaganym")]
+            [EmailAddress(ErrorMessage = "Niepoprawny adres email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Hasło jest polem wymaganym")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
