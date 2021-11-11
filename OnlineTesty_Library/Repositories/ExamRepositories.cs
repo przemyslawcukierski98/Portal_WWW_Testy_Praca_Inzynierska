@@ -1,8 +1,10 @@
-﻿using OnlineTesty_Library.Contexts;
+﻿using Microsoft.AspNetCore.Http;
+using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,9 +12,11 @@ namespace OnlineTesty_Library.Repositories
 {
     public class ExamRepositories : BaseRepositoryEF, IExamRepositories
     {
-        public ExamRepositories(IUnitOfWork unitOfWork) : base(unitOfWork)
-        {
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
+        public ExamRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        {
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public void AddQuestionToExam(ExamQuestion question)
@@ -22,7 +26,10 @@ namespace OnlineTesty_Library.Repositories
 
         public Guid Create(Exam model)
         {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+
             this.GetDbSet<Exam>().Add(model);
+            model.UserEmail = userEmail.Substring(67).Trim();
             this.UnitOfWork.SaveChanges();
             return model.ID;
         }
@@ -37,6 +44,21 @@ namespace OnlineTesty_Library.Repositories
         public IEnumerable<Exam> FindAll()
         {
             return this.GetDbSet<Exam>();
+        }
+
+        public IEnumerable<Exam> FindAssignedExamsForLecturer()
+        {
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony");
+        }
+
+        public IEnumerable<Exam> FindResolvedExamsForLecturer()
+        {
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Rozwiązany");
+        }
+
+        public IEnumerable<Exam> FindEvaluatedExamsForLecturer()
+        {
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Oceniony");
         }
 
         public Exam Read(Guid? ID)
@@ -59,5 +81,8 @@ namespace OnlineTesty_Library.Repositories
         void Update(Exam model);
         void AddQuestionToExam(ExamQuestion question);
         IEnumerable<Exam> FindAll();
+        IEnumerable<Exam> FindAssignedExamsForLecturer();
+        IEnumerable<Exam> FindEvaluatedExamsForLecturer();
+        IEnumerable<Exam> FindResolvedExamsForLecturer();
     }
 }

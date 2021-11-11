@@ -60,7 +60,7 @@
 </style>
 
 <ul class="list">
-    @foreach (var exam in ExamsService.FindAll())
+    @foreach (var exam in ExamsService.FindAssignedExamsForLecturer())
     {
         <li class="group-record">@exam.Name  
              <button class="details-button">Szczegóły</button>
