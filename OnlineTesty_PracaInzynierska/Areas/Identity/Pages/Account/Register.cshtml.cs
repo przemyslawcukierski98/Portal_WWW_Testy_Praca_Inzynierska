@@ -51,7 +51,8 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required(ErrorMessage = "Hasło jest polem wymaganym")]
-            [RegularExpression(@"^(?=.*[a - z])(?=.*[A - Z])(?=.*\d).{8, 15}$", ErrorMessage = "Hasło musi zawierać od 8 do 15 znaków, jedną dużą i małą literę oraz znak specjalny")]
+            [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", 
+                ErrorMessage = "Hasło musi zawierać minimum 8 znaków, jedną dużą i małą literę, cyfrę oraz znak specjalny")]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
