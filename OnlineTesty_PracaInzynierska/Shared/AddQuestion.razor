@@ -1,5 +1,6 @@
 ﻿@page "/add-question"
 @using OnlineTesty_Library.Models
+@inject IJSRuntime JsRuntime
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
 
@@ -44,11 +45,15 @@
 </EditForm>
 
 @code {
+
     private ExamQuestion examQuestion = new ExamQuestion();
 
     async Task SubmitExamQuestion()
     {
+        examQuestion.ID = Guid.NewGuid();
         examQuestion.ExamID = await sessionStorage.GetItemAsync<Guid>("idExam");
         var result = ExamQuestionsService.Create(examQuestion);
+
+        await JsRuntime.InvokeVoidAsync("alert", "Pytanie zostało dodane pomyślnie");
     }
 }
