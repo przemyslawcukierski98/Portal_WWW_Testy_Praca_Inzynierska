@@ -54,11 +54,23 @@ namespace OnlineTesty_Library.Repositories
                 .Where(e => e.Question == Question).FirstOrDefault();
         }
 
+        public IEnumerable<ExamQuestion> ReadAllQuestionsByExam(Guid examId)
+        {
+            string examIdToUpper = examId.ToString().ToUpper();
+            IEnumerable<ExamQuestion> allExamQuestionsByExamId = GetDbSet<ExamQuestion>().Where(e => e.ExamID.ToString() == examIdToUpper);
+            return allExamQuestionsByExamId;
+        }
+
         public void Update(ExamQuestion model)
         {
             var update = Read(model.ID);
             //update.Name = model.Name; TODO
             this.UnitOfWork.SaveChanges();
+        }
+
+        public void Delete(Guid ID)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -68,7 +80,8 @@ namespace OnlineTesty_Library.Repositories
         Guid Create(ExamQuestion model);
         Guid? GetQuestionId(string Question);
         void Update(ExamQuestion model);
-        void Delete(Guid? ID);
+        void Delete(Guid ID);
         IEnumerable<ExamQuestion> FindAll();
+        IEnumerable<ExamQuestion> ReadAllQuestionsByExam(Guid id);
     }
 }
