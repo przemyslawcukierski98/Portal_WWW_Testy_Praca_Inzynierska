@@ -66,11 +66,7 @@
     <ul class="list">
         @foreach (var exam in ExamsService.FindAssignedExamsForLecturer())
         {
-            <li class="group-record">
-                @exam.Name
-                <button class="details-button">Szczegóły</button>
-                <button class="remove-button">Usuń</button>
-            </li>
+            <li class="group-record"><a href="/lecturer-exam-details/@exam.ID">@exam.Name</a></li>
         }
     </ul>
 </EditForm>

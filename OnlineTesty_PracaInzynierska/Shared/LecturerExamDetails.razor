@@ -1,7 +1,8 @@
-﻿@page "/lecturer-exam-details"
+﻿@page "/lecturer-exam-details/{GuidParam}"
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionService
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
 
@@ -41,35 +42,45 @@
             <li class="exam-record"><b>Nazwa grupy studenckiej:</b> @exam.StudentGroupName</li>
             <li class="exam-record"><b>Status egzaminu:</b> @exam.ExamStatus</li>
         </ul>
+        <br/><br/>
     </div>
 </EditForm>
 
 <EditForm Model="@examQuestions">
     <div>
-        @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse("DBFA9408-A849-44B6-B2BC-08D9A5E3163E")))
-            {   
-                <ul class="list">
-                    <li class="exam-question-record"><b>@item.Question</b></li>
-                    <li class="exam-question-record">A: @item.AnswerA</li>
-                    <li class="exam-question-record">B: @item.AnswerB</li>
-                    <li class="exam-question-record">C: @item.AnswerC</li>
-                    <li class="exam-question-record">D: @item.AnswerD</li>
-                    <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
-                </ul>
-                <br/><br/>
-            }      
+        @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam)))
+        {
+            <ul class="list">
+                <li class="exam-question-record"><b>@item.Question</b></li>
+                <li class="exam-question-record">A: @item.AnswerA</li>
+                <li class="exam-question-record">B: @item.AnswerB</li>
+                <li class="exam-question-record">C: @item.AnswerC</li>
+                <li class="exam-question-record">D: @item.AnswerD</li>
+                <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
+            </ul>
+            <br /><br />
+        }
     </div>
 </EditForm>
 
+<button class="remove-button" @onclick="GoToExamList_OnClick">Cofnij do listy egzaminów</button>
 
 @code {
 
     private Exam exam = new Exam();
     private IEnumerable<ExamQuestion> examQuestions;
 
+    [Parameter]
+    public string GuidParam { get; set; }
+
     protected override void OnInitialized()
     {
-        exam = ExamService.Read(Guid.Parse("DBFA9408-A849-44B6-B2BC-08D9A5E3163E"));
-        examQuestions = ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse("DBFA9408-A849-44B6-B2BC-08D9A5E3163E"));
+        exam = ExamService.Read(Guid.Parse(GuidParam));
+        examQuestions = ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam));
+    }
+
+    protected void GoToExamList_OnClick()
+    {
+        NavigationManager.NavigateTo("assigned-exams");
     }
 }

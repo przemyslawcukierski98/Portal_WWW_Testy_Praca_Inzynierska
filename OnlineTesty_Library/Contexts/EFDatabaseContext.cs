@@ -18,6 +18,7 @@ namespace OnlineTesty_Library.Contexts
         public DbSet<Exam> Exams { get; set; }
         public DbSet<ExamQuestion> ExamQuestions { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
+        public DbSet<StudentAndGroup> StudentsAndGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,11 @@ namespace OnlineTesty_Library.Contexts
         private void SetStudentGroups(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StudentGroup>().Property(e => e.ID).ValueGeneratedOnAdd();
+        }
+
+        private void SetStudentsAndGroups(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StudentAndGroup>().Property(e => e.ID).ValueGeneratedOnAdd();
         }
 
         public new void SaveChanges()
