@@ -3,11 +3,20 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Strona główna
-            </NavLink>
-        </li>
+        <AuthorizeView Roles="Student">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="main-page-student">
+                    <span class="oi oi-home" aria-hidden="true"></span> Strona główna
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="Lecturer">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="main-page-lecturer">
+                    <span class="oi oi-home" aria-hidden="true"></span> Strona główna
+                </NavLink>
+            </li>
+        </AuthorizeView>
         <AuthorizeView Roles="Student">
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href="exams-to-write">
