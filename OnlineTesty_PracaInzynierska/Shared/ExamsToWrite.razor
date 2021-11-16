@@ -1,9 +1,30 @@
 ﻿@page "/exams-to-write"
+@using OnlineTesty_Library.Models
+
+@inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
+@inject Blazored.LocalStorage.ILocalStorageService sessionStorage
+@inject NavigationManager NavigationManager     
 
 @attribute [Authorize(Roles = "Student")]
 
 <h3>Egzaminy do rozwiązania</h3>
 
+<EditForm Model="@exam">
+    <ul class="list">
+        @foreach (var exam in ExamsService.FindAssignedExamsForStudent())
+        {
+            <li class="group-record"><a href="/student-exam-to-be-solved/@exam.ID">@exam.Name</a></li>
+        }
+    </ul>
+</EditForm>
+
 @code {
 
+    private Exam exam = new Exam();
+
+    protected void Details_OnClick()
+    {
+        sessionStorage.SetItemAsync("idExam", exam.ID);
+        NavigationManager.NavigateTo("student-exam-to-be-solved");
+    }
 }

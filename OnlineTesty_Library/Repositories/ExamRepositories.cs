@@ -13,10 +13,13 @@ namespace OnlineTesty_Library.Repositories
     public class ExamRepositories : BaseRepositoryEF, IExamRepositories
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
 
-        public ExamRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        public ExamRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+            IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
+            _studentAndGroupRepositories = studentAndGroupRepositories;
         }
 
         public void AddQuestionToExam(ExamQuestion question)
@@ -46,29 +49,40 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<Exam>();
         }
 
-        public IEnumerable<Exam> FindAssignedExamsForLecturer()
+        // listy egzaminów dla wykładowcy i studenta
+        public IEnumerable<Exam> FindAssignedExams()
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
             return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony")
-                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
+                .Where(e => e.UserEmail == userEmail);
         }
 
-        public IEnumerable<Exam> FindResolvedExamsForLecturer()
+        public IEnumerable<Exam> FindResolvedExams()
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
             return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Rozwiązany")
-                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
+                .Where(e => e.UserEmail == userEmail);
         }
 
-        public IEnumerable<Exam> FindEvaluatedExamsForLecturer()
+        public IEnumerable<Exam> FindEvaluatedExams()
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
             return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Oceniony")
-                .Where(e => e.UserEmail == userEmail.Substring(67).Trim());
+                .Where(e => e.UserEmail == userEmail);
         }
+
+        public IEnumerable<Exam> FindAssignedExamsForStudent()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            var userDetails = _studentAndGroupRepositories.Read(userEmail);
+
+            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony")
+                .Where(e => e.StudentGroupName == userDetails.StudentGroupName);
+        }
+
 
         public Exam Read(Guid? ID)
         {
@@ -90,8 +104,9 @@ namespace OnlineTesty_Library.Repositories
         void Update(Exam model);
         void AddQuestionToExam(ExamQuestion question);
         IEnumerable<Exam> FindAll();
-        IEnumerable<Exam> FindAssignedExamsForLecturer();
-        IEnumerable<Exam> FindEvaluatedExamsForLecturer();
-        IEnumerable<Exam> FindResolvedExamsForLecturer();
+        IEnumerable<Exam> FindAssignedExams();
+        IEnumerable<Exam> FindEvaluatedExams();
+        IEnumerable<Exam> FindResolvedExams();
+        IEnumerable<Exam> FindAssignedExamsForStudent();
     }
 }

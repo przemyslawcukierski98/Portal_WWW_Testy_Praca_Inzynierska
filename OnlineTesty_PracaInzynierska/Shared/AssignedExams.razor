@@ -64,7 +64,7 @@
 
 <EditForm Model="@exam">
     <ul class="list">
-        @foreach (var exam in ExamsService.FindAssignedExamsForLecturer())
+        @foreach (var exam in ExamsService.FindAssignedExams())
         {
             <li class="group-record"><a href="/lecturer-exam-details/@exam.ID">@exam.Name</a></li>
         }
@@ -75,8 +75,6 @@
 
     private Exam exam = new Exam();
 
-    // w jaki sposób zrobić przechodzenie do strony z egzaminem? 
-    // na razie mogę przynajmnieć utworzyć jej widok na przykładzie KONKRETNEGO egzaminu
     protected void Details_OnClick()
     {
         sessionStorage.SetItemAsync("idExam", exam.ID);

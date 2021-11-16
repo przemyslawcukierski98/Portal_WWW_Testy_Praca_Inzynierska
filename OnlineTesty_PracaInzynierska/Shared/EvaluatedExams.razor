@@ -61,7 +61,7 @@
 </style>
 
 <ul class="list">
-    @foreach (var exam in ExamsService.FindEvaluatedExamsForLecturer())
+    @foreach (var exam in ExamsService.FindEvaluatedExams())
     {
         <li class="group-record">
             @exam.Name
