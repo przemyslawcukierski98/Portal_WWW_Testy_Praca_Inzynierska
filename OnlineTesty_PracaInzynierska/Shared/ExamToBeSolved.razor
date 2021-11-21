@@ -77,8 +77,6 @@
     private IEnumerable<ExamQuestion> examQuestions;
     private Dictionary<string, string> studentAnswers = new Dictionary<string, string>();
 
-    private string fname;
-
     public bool AnswerAIsChecked { get; set; }
     public bool AnswerBIsChecked { get; set; }
     public bool AnswerCIsChecked { get; set; }
@@ -123,6 +121,9 @@
 
         testSolution.StudentAnswersCode = studentAnswersCode.ToString();
         var result = StudentTestSolutionService.SaveExamSolution(testSolution);
+
+        // zmiana statusu egzaminu na "Rozwiązany"
+        ExamService.ChangeExamStatus(exam.ID, "Rozwiązany");
     }
 
     protected void GoToExamList_OnClick()

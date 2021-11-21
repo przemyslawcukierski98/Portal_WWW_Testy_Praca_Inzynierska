@@ -49,6 +49,15 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<Exam>();
         }
 
+        public void ChangeExamStatus(Guid examId, string newStatus)
+        {
+            Exam changeExam = this.GetDbSet<Exam>().Where(e => e.ID == examId).FirstOrDefault();
+
+            changeExam.ExamStatus = newStatus;
+            this.GetDbSet<Exam>().Update(changeExam);
+            this.UnitOfWork.SaveChanges();
+        }
+
         // listy egzaminów dla wykładowcy i studenta
         public IEnumerable<Exam> FindAssignedExams()
         {
@@ -103,6 +112,7 @@ namespace OnlineTesty_Library.Repositories
         void Delete(Guid? ID);
         void Update(Exam model);
         void AddQuestionToExam(ExamQuestion question);
+        void ChangeExamStatus(Guid examId, string newStatus);
         IEnumerable<Exam> FindAll();
         IEnumerable<Exam> FindAssignedExams();
         IEnumerable<Exam> FindEvaluatedExams();
