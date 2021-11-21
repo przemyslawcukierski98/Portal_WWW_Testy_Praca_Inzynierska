@@ -55,6 +55,7 @@ namespace OnlineTesty_PracaInzynierska
             services.AddTransient<IExamQuestionsRepositories, ExamQuestionsRepositories>();
             services.AddTransient<IStudentGroupsRepositories, StudentGroupsRepositories>();
             services.AddTransient<IStudentAndGroupRepositories, StudentAndGroupRepositories>();
+            services.AddTransient<IStudentTestSolutionRepositories, StudentTestSolutionRepositories>();
 
             services.AddBlazoredLocalStorage();
         }

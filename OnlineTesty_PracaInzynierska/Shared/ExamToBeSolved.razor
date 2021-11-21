@@ -1,7 +1,9 @@
 ﻿@page "/student-exam-to-be-solved/{GuidParam}"
 @using OnlineTesty_Library.Models
+@using System.Text 
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionService
+@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionService 
 @inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Student")]
@@ -34,7 +36,7 @@
     }
 </style>
 
-<EditForm Model="@examQuestions">
+<EditForm Model="@examQuestions" OnValidSubmit="SubmitStudentResult">
     <div>
         @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam)))
         {
@@ -45,26 +47,33 @@
 
             <ul class="list">
                 <li class="exam-question-record"><b>@item.Question</b></li>
-                <li class="exam-question-record">A: @item.AnswerA
+                <li class="exam-question-record">
+                    A: @item.AnswerA
                     <input asp-for="AnswerAIsChecked" type="checkbox" name="answerA" @onchange="eventArgs => { CheckChanged(answerAId, item.AnswerA); }">
                 </li>
-                <li class="exam-question-record">B: @item.AnswerB
+                <li class="exam-question-record">
+                    B: @item.AnswerB
                     <input asp-for="AnswerBIsChecked" type="checkbox" name="answerB" @onchange="eventArgs => { CheckChanged(answerBId, item.AnswerB); }">
                 </li>
-                <li class="exam-question-record">C: @item.AnswerC
+                <li class="exam-question-record">
+                    C: @item.AnswerC
                     <input asp-for="AnswerCIsChecked" type="checkbox" name="answerC" @onchange="eventArgs => { CheckChanged(answerCId, item.AnswerC); }">
                 </li>
-                <li class="exam-question-record">D: @item.AnswerD
+                <li class="exam-question-record">
+                    D: @item.AnswerD
                     <input asp-for="AnswerDIsChecked" type="checkbox" name="answerD" @onchange="eventArgs => { CheckChanged(answerDId, item.AnswerD); }">
                 </li>
             </ul>
             <br /><br />
         }
+
+        <button type="submit" class="btn btn-primary">Prześlij rozwiązanie</button>
     </div>
 </EditForm>
 
 @code {
     private Exam exam = new Exam();
+    private StudentTestSolution testSolution = new StudentTestSolution();
     private IEnumerable<ExamQuestion> examQuestions;
     private Dictionary<string, string> studentAnswers = new Dictionary<string, string>();
 
@@ -82,6 +91,9 @@
     {
         exam = ExamService.Read(Guid.Parse(GuidParam));
         examQuestions = ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam));
+
+        testSolution.ExamId = Guid.Parse(GuidParam.ToUpper());
+        testSolution.LecturerEmail = exam.UserEmail;
     }
 
     private EventCallback CheckChanged(string answerId, string answerDetails)
@@ -96,6 +108,21 @@
         studentAnswers.Add(answerId, answerDetails);
 
         return EventCallback.Empty;
+    }
+
+    protected void SubmitStudentResult()
+    {
+        StringBuilder studentAnswersCode = new StringBuilder();
+
+        // wczytanie kodów odpowiedzi
+        foreach (KeyValuePair<string, string> item in studentAnswers)
+        {
+            studentAnswersCode.Append(item.Key);
+            studentAnswersCode.Append("/");
+        }
+
+        testSolution.StudentAnswersCode = studentAnswersCode.ToString();
+        var result = StudentTestSolutionService.SaveExamSolution(testSolution);
     }
 
     protected void GoToExamList_OnClick()
