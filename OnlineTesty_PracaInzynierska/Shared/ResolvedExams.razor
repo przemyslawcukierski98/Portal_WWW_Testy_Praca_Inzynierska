@@ -2,6 +2,9 @@
 
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
+@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionsService 
+@inject Blazored.LocalStorage.ILocalStorageService sessionStorage
+@inject NavigationManager NavigationManager 
 
 @attribute [Authorize(Roles = "Lecturer")]
 
@@ -60,17 +63,16 @@
         }
 </style>
 
-<ul class="list">
-    @foreach (var exam in ExamsService.FindResolvedExams())
-    {
-        <li class="group-record">
-            @exam.Name
-        <button class="details-button">Szczegóły</button>
-        <button class="remove-button">Usuń</button>
-    </li>
-}
-</ul>
+<EditForm Model="@solution">
+    <ul class="list">
+        @foreach (var item in StudentTestSolutionsService.FindResolvedExams())
+        {
+            <li class="group-record"><a href="/exam-to-be-assessed/@item.ID">Student: @item.StudentEmail, egzamin: @item.ExamId</a></li>
+        }
+    </ul>
+</EditForm>
 
 @code {
-
+    private Exam exam = new Exam();
+    private StudentTestSolution solution = new StudentTestSolution();
 }

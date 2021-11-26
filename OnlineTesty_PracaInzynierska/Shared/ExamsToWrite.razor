@@ -71,12 +71,5 @@
 </EditForm>
 
 @code {
-
     private Exam exam = new Exam();
-
-    protected void Details_OnClick()
-    {
-        sessionStorage.SetItemAsync("idExam", exam.ID);
-        NavigationManager.NavigateTo("student-exam-to-be-solved");
-    }
 }

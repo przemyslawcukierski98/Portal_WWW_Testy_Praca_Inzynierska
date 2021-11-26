@@ -103,12 +103,19 @@ namespace OnlineTesty_Library.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public string GetExamName(Guid? ID)
+        {
+            Exam exam = this.GetDbSet<Exam>().Where(e => e.ID == ID).FirstOrDefault();
+            return exam.Name;
+        }
     }
 
     public interface IExamRepositories
     {
         Exam Read(Guid? ID);
         Guid Create(Exam model);
+        string GetExamName(Guid? ID);
         void Delete(Guid? ID);
         void Update(Exam model);
         void AddQuestionToExam(ExamQuestion question);

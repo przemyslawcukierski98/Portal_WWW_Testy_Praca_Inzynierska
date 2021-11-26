@@ -22,17 +22,33 @@ namespace OnlineTesty_Library.Repositories
         // zapis rozwiązanego egzaminu do tabeli w bazie danych
         public Guid SaveExamSolution(StudentTestSolution model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim(); 
 
-            model.StudentEmail = userEmail.Substring(67).Trim();
+            model.StudentEmail = userEmail;
             this.GetDbSet<StudentTestSolution>().Add(model);
             this.UnitOfWork.SaveChanges();
             return model.ID;
+        }
+
+        // wyświetlenie listy wszystkich ROZWIĄZAŃ EGZAMINÓW na podstawie maila wykładowcy
+        public IEnumerable<StudentTestSolution> FindResolvedExams()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+
+            return this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == userEmail);
+        }
+
+        public StudentTestSolution GetSolution(Guid? ID)
+        {
+            return this.GetDbSet<StudentTestSolution>()
+                .Where(e => e.ID == ID).FirstOrDefault();
         }
     }
 
     public interface IStudentTestSolutionRepositories
     {
         Guid SaveExamSolution(StudentTestSolution model);
+        StudentTestSolution GetSolution(Guid? ID);
+        IEnumerable<StudentTestSolution> FindResolvedExams();
     }
 }
