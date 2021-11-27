@@ -57,7 +57,7 @@
             <li class="exam-question-record">C: @item.AnswerC</li>
             <li class="exam-question-record">D: @item.AnswerD</li>
             <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
-            <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt((item.Order)-1)</i></li>
+            <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
         </ul>
             <br /><br />
         }
