@@ -91,6 +91,7 @@
         examQuestions = ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam));
 
         testSolution.ExamId = Guid.Parse(GuidParam.ToUpper());
+        testSolution.ExamTitle = exam.Name;
         testSolution.LecturerEmail = exam.UserEmail;
     }
 

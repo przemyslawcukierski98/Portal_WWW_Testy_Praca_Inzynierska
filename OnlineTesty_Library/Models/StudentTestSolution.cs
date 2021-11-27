@@ -15,6 +15,7 @@ namespace OnlineTesty_Library.Models
         public Guid ID { get; set; }
 
         public Guid ExamId { get; set; }
+        public string ExamTitle { get; set; }
         public string StudentEmail { get; set; }
         public string LecturerEmail { get; set; }
         public string StudentAnswersCode { get; set; }

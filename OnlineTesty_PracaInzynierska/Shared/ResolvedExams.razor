@@ -67,7 +67,7 @@
     <ul class="list">
         @foreach (var item in StudentTestSolutionsService.FindResolvedExams())
         {
-            <li class="group-record"><a href="/exam-to-be-assessed/@item.ID">Student: @item.StudentEmail, egzamin: @item.ExamId</a></li>
+            <li class="group-record"><a href="/exam-to-be-assessed/@item.ID">Student: @item.StudentEmail, egzamin: @item.ExamTitle</a></li>
         }
     </ul>
 </EditForm>
@@ -75,4 +75,6 @@
 @code {
     private Exam exam = new Exam();
     private StudentTestSolution solution = new StudentTestSolution();
+
+
 }
