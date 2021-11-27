@@ -3,6 +3,7 @@
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionService
 @inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionService
+@inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService 
 @inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
@@ -64,14 +65,40 @@
     </div>
 </EditForm>
 
+<EditForm Model="@result" OnValidSubmit="SubmitResult">
+    <div>
+        <ul class="list">
+        <li class="exam-record"><b>Ilość poprawnych odpowiedzi studenta: </b>
+            <InputNumber id="answer-a" @bind-Value="@result.StudentNumberOfPoints" class="form-control" />
+        </li>
+        <li class="exam-record"><b>Wynik:</b> @result.StudentNumberOfPoints / @questionsCount </li>
+        </ul>
+        <li class="exam-record"><b>Ocena: </b> 
+             <InputSelect id="student-group" @bind-Value="@result.Evaluation">
+                 <option value="2.0">2.0</option>
+                 <option value="3.0">3.0</option>
+                 <option value="3.5">3.5</option>
+                 <option value="4.0">4.0</option>
+                 <option value="4.5">4.5</option>
+                 <option value="5.0">5.0</option>
+             </InputSelect>
+        </li>
+        <button type="submit" class="btn btn-primary">Zatwierdź wynik</button>
+        <br /><br />
+    </div>
+</EditForm>
+
 @code {
     private Exam exam = new Exam();
     private IEnumerable<ExamQuestion> examQuestions;
     private StudentTestSolution solution = new StudentTestSolution();
+    private StudentTestResult result = new StudentTestResult();
     private List<char> studentAnswerCodes = new List<char>();
 
     private string[] answersCodesPom = { };
     private char separator = '/';
+    private int pointsSum = 0;
+    private int questionsCount = 0;
 
     [Parameter]
     public string GuidParam { get; set; }
@@ -88,10 +115,23 @@
 
         answersCodesPom = solution.StudentAnswersCode.Split(separator);
 
-        for(int i=0; i<answersCodesPom.Length-1; i++)
+        // wydobycie kodów odpowiedzi studenta
+        for (int i = 0; i < answersCodesPom.Length - 1; i++)
         {
             char answerChar = answersCodesPom[i].Last();
             studentAnswerCodes.Add(answerChar);
+
+            questionsCount++;
         }
+    }
+
+    void SubmitResult()
+    {
+        result.ExamNumberOfPoints = questionsCount;
+        result.ExamId = solution.ExamId;
+        result.StudentEmail = solution.StudentEmail;
+        result.LecturerEmail = solution.LecturerEmail;
+
+        StudentTestResultService.SaveExamResult(result);
     }
 }
