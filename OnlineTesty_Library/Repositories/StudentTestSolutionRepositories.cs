@@ -35,7 +35,8 @@ namespace OnlineTesty_Library.Repositories
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            return this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == userEmail);
+            return this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == userEmail)
+                .Where(e => e.IsEvaluated == false);
         }
 
         public StudentTestSolution GetSolution(Guid? ID)

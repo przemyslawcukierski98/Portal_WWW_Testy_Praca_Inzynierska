@@ -19,5 +19,6 @@ namespace OnlineTesty_Library.Models
         public string StudentEmail { get; set; }
         public string LecturerEmail { get; set; }
         public string StudentAnswersCode { get; set; }
+        public bool IsEvaluated { get; set; }
     }
 }

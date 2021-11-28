@@ -22,11 +22,6 @@ namespace OnlineTesty_Library.Repositories
             _studentAndGroupRepositories = studentAndGroupRepositories;
         }
 
-        public void AddQuestionToExam(ExamQuestion question)
-        {
-            throw new NotImplementedException();
-        }
-
         public Guid Create(Exam model)
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
@@ -42,11 +37,6 @@ namespace OnlineTesty_Library.Repositories
             var remove = Read(ID);
             this.GetDbSet<Exam>().Remove(remove);
             this.UnitOfWork.SaveChanges();
-        }
-
-        public IEnumerable<Exam> FindAll()
-        {
-            return this.GetDbSet<Exam>();
         }
 
         public void ChangeExamStatus(Guid examId, string newStatus)
@@ -99,11 +89,6 @@ namespace OnlineTesty_Library.Repositories
                 .Where(e => e.ID == ID).FirstOrDefault();
         }
 
-        public void Update(Exam model)
-        {
-            throw new NotImplementedException();
-        }
-
         public string GetExamName(Guid? ID)
         {
             Exam exam = this.GetDbSet<Exam>().Where(e => e.ID == ID).FirstOrDefault();
@@ -117,10 +102,7 @@ namespace OnlineTesty_Library.Repositories
         Guid Create(Exam model);
         string GetExamName(Guid? ID);
         void Delete(Guid? ID);
-        void Update(Exam model);
-        void AddQuestionToExam(ExamQuestion question);
         void ChangeExamStatus(Guid examId, string newStatus);
-        IEnumerable<Exam> FindAll();
         IEnumerable<Exam> FindAssignedExams();
         IEnumerable<Exam> FindEvaluatedExams();
         IEnumerable<Exam> FindResolvedExams();

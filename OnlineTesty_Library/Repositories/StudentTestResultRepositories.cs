@@ -19,9 +19,17 @@ namespace OnlineTesty_Library.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public StudentTestResult GetResult(Guid? ID)
+        public IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent()
         {
-            throw new NotImplementedException();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+
+            return this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == userEmail);
+        }
+
+        public StudentTestResult Read(Guid? ID)
+        {
+            return this.GetDbSet<StudentTestResult>()
+                .Where(e => e.ID == ID).FirstOrDefault();
         }
 
         public Guid SaveExamResult(StudentTestResult model)
@@ -34,7 +42,8 @@ namespace OnlineTesty_Library.Repositories
 
     public interface IStudentTestResultRepositories
     {
+        StudentTestResult Read(Guid? ID);
         Guid SaveExamResult(StudentTestResult model);
-        StudentTestResult GetResult(Guid? ID);
+        IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent();
     }
 }

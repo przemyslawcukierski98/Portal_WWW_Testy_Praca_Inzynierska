@@ -132,6 +132,8 @@
         result.StudentEmail = solution.StudentEmail;
         result.LecturerEmail = solution.LecturerEmail;
 
+        solution.IsEvaluated = true;
+
         StudentTestResultService.SaveExamResult(result);
     }
 }
