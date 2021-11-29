@@ -21,9 +21,16 @@ namespace OnlineTesty_Library.Repositories
 
         public IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent()
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            var studentEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            return this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == userEmail);
+            return this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == studentEmail);
+        }
+
+        public IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer()
+        {
+            var lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+
+            return this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail);
         }
 
         public StudentTestResult Read(Guid? ID)
@@ -45,5 +52,6 @@ namespace OnlineTesty_Library.Repositories
         StudentTestResult Read(Guid? ID);
         Guid SaveExamResult(StudentTestResult model);
         IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent();
+        IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer();
     }
 }

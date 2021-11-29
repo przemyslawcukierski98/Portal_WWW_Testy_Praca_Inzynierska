@@ -1,6 +1,8 @@
 ﻿@page "/add-student-group"
 @using OnlineTesty_Library.Models
+@inject IJSRuntime JsRuntime
 @inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupService
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
 
@@ -18,8 +20,11 @@
 {
     private StudentGroup studentGroup = new StudentGroup();
 
-    void SubmitStudentGroup()
+    async Task SubmitStudentGroup()
     {
         var result = StudentGroupService.Create(studentGroup);
+
+        await JsRuntime.InvokeVoidAsync("alert", "Grupa studencka została dodana pomyślnie");
+        NavigationManager.NavigateTo("student-groups");
     }
 }

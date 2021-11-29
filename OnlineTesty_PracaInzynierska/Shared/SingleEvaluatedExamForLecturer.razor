@@ -1,0 +1,56 @@
+﻿@page "/single-evaluated-exam-for-lecturer/{GuidParam}"
+@using OnlineTesty_Library.Models
+@inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService
+@inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
+
+@attribute [Authorize(Roles = "Lecturer")]
+
+<h3>Oceniony egzamin: @exam.Name</h3>
+<h5>Opis egzaminu: @exam.Description</h5>
+<br />
+
+<style>
+    .list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .exam-record {
+        border: 1px solid #ddd;
+        margin-top: -1px; /* Prevent double borders */
+        background-color: white;
+        color: black;
+        padding: 12px;
+    }
+
+    .exam-question-record {
+        border: 1px solid #ddd;
+        margin-top: -1px; /* Prevent double borders */
+        background-color: white;
+        color: black;
+        padding: 12px;
+    }
+</style>
+
+<br />
+
+<p><b>Ocenił: </b> @result.LecturerEmail</p>
+<br />
+<p><b>Liczba punktów: </b>@result.StudentNumberOfPoints/@result.ExamNumberOfPoints pkt</p>
+<p><b>Ocena: </b>@result.Evaluation</p>
+
+
+@code {
+    private StudentTestResult result = new StudentTestResult();
+    private Exam exam = new Exam();
+
+    [Parameter]
+    public string GuidParam { get; set; }
+
+    protected override void OnInitialized()
+    {
+        result = StudentTestResultService.Read(Guid.Parse(GuidParam));
+        exam = ExamService.Read(result.ExamId);
+    }
+}

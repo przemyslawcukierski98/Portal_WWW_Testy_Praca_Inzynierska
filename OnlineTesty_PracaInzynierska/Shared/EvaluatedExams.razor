@@ -1,7 +1,7 @@
 ﻿@page "/evaluated-exams"
 
 @using OnlineTesty_Library.Models
-@inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
+@inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService
 
 @attribute [Authorize(Roles = "Lecturer")]
 
@@ -60,17 +60,15 @@
         }
 </style>
 
-<ul class="list">
-    @foreach (var exam in ExamsService.FindEvaluatedExams())
-    {
-        <li class="group-record">
-            @exam.Name
-        <button class="details-button">Szczegóły</button>
-        <button class="remove-button">Usuń</button>
-    </li>
-}
-</ul>
+<EditForm Model="@result">
+    <ul class="list">
+        @foreach (var result in StudentTestResultService.FindEvaluatedExamsForStudent())
+        {
+            <li class="group-record"><a href="/single-evaluated-exam/@result.ID">@result.ExamId</a></li>
+        }
+    </ul>
+</EditForm>
 
 @code {
-
+    private new StudentTestResult result = new StudentTestResult();
 }

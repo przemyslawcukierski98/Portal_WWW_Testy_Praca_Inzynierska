@@ -2,12 +2,11 @@
 @using OnlineTesty_Library.Models
 
 @inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories TestResultService
-@inject Blazored.LocalStorage.ILocalStorageService sessionStorage
-@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Student")]
 
 <h3>Ocenione egzaminy</h3>
+<br />
 
 <style>
     .list {
