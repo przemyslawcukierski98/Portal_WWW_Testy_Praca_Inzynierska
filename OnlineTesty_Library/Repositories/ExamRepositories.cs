@@ -82,7 +82,6 @@ namespace OnlineTesty_Library.Repositories
                 .Where(e => e.StudentGroupName == userDetails.StudentGroupName);
         }
 
-
         public Exam Read(Guid? ID)
         {
             return this.GetDbSet<Exam>()

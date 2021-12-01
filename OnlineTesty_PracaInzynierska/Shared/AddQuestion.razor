@@ -3,8 +3,35 @@
 @inject IJSRuntime JsRuntime
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
+
+<style>
+    .btnCreateExamEnding_style {
+        box-shadow: inset 0px 39px 0px -24px #e67a73;
+        background: linear-gradient(to bottom, #e4685d 5%, #eb675e 100%);
+        background-color: #e4685d;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        font-family: Arial;
+        font-size: 15px;
+        padding: 5px 10px;
+        text-decoration: none;
+        text-shadow: 0px 1px 50px #b23e35;
+    }
+
+    .btnCreateExamEnding_style:hover {
+        background: linear-gradient(to bottom, #eb675e 5%, #e4685d 100%);
+        background-color: #eb675e;
+    }
+
+    .btnCreateExamEnding_style:active {
+        position: relative;
+        top: 1px;
+    }
+</style>
 
 <h3>Dodaj pytanie do egzaminu</h3>
 <EditForm Model="@examQuestion" OnValidSubmit="SubmitExamQuestion">
@@ -37,13 +64,21 @@
         <InputText id="answer-correct" @bind-Value="examQuestion.CorrectAnswerChar" class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Dodaj pytanie</button>
+    <button type="submit" class="btn btn-primary">Dodaj pytanie</button><br /><br/>
+    <input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Zatwierdź nowy egzamin" @onclick="eventArgs => { CreateExamEnding(); }">
 </EditForm>
 
 @code {
 
     private ExamQuestion examQuestion = new ExamQuestion();
     private int questionIdPom = 0;
+
+    protected EventCallback CreateExamEnding()
+    {
+        NavigationManager.NavigateTo("main-page-lecturer");
+
+        return EventCallback.Empty;
+    }
 
     async Task SubmitExamQuestion()
     {
