@@ -1,7 +1,8 @@
-﻿@page "/add-exam" 
+﻿@page "/add-exam"
 @using OnlineTesty_Library.Models
+@inject IJSRuntime JsRuntime
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
-@inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService 
+@inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
 
@@ -34,13 +35,32 @@
 @code {
     private Exam exam = new Exam();
 
-    void SubmitExam()
+    async Task SubmitExam()
     {
+        bool nameIsEmpty = string.IsNullOrEmpty(exam.Name);
+        bool descriptionIsEmpty = string.IsNullOrEmpty(exam.Description);
+
+        // status - co z tym?
         exam.ExamStatus = "Utworzony";
-        var result = ExamService.Create(exam);
 
-        sessionStorage.SetItemAsync("idExam", exam.ID);
+        if (string.IsNullOrEmpty(exam.Name) && !string.IsNullOrEmpty(exam.Description))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij tytuł egzaminu");
+        }
+        else if (!string.IsNullOrEmpty(exam.Name) && string.IsNullOrEmpty(exam.Description))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij opis egzaminu");
+        }
+        else if (string.IsNullOrEmpty(exam.Name) && string.IsNullOrEmpty(exam.Description))
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij tytuł oraz opis egzaminu");
+        }
+        else
+        {
+            var result = ExamService.Create(exam);
 
-        NavigationManager.NavigateTo("add-question");
+            await sessionStorage.SetItemAsync("idExam", exam.ID);
+            NavigationManager.NavigateTo("add-question");
+        }
     }
 }

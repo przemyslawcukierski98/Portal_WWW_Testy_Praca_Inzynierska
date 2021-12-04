@@ -135,5 +135,7 @@
         solution.IsEvaluated = true;
 
         StudentTestResultService.SaveExamResult(result);
+        NavigationManager.NavigateTo("solved-exams");
+
     }
 }

@@ -113,7 +113,6 @@
     {
         StringBuilder studentAnswersCode = new StringBuilder();
 
-        // wczytanie kodów odpowiedzi
         foreach (KeyValuePair<string, string> item in studentAnswers)
         {
             studentAnswersCode.Append(item.Key);
@@ -123,11 +122,10 @@
         testSolution.StudentAnswersCode = studentAnswersCode.ToString();
         var result = StudentTestSolutionService.SaveExamSolution(testSolution);
 
-        // zmiana statusu egzaminu na "Rozwiązany"
-        //ExamService.ChangeExamStatus(exam.ID, "Rozwiązany");
+        GoToExamList();
     }
 
-    protected void GoToExamList_OnClick()
+    protected void GoToExamList()
     {
         NavigationManager.NavigateTo("exams-to-write");
     }

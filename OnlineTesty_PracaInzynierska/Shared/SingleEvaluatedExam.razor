@@ -3,7 +3,7 @@
 @inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 
-@attribute [Authorize(Roles = "Student")]
+@attribute [Authorize]
 
 <h3>Oceniony egzamin: @exam.Name</h3>
 <h5>Opis egzaminu: @exam.Description</h5>
@@ -35,6 +35,7 @@
 
 <br/>
 
+<p><b>Rozwiązał: </b> @result.StudentEmail</p>
 <p><b>Ocenił: </b> @result.LecturerEmail</p>
 <br/>
 <p><b>Liczba punktów: </b>@result.StudentNumberOfPoints/@result.ExamNumberOfPoints pkt</p>

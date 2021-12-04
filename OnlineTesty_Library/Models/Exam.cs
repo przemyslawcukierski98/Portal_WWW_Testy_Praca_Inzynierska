@@ -15,11 +15,15 @@ namespace OnlineTesty_Library.Models
         public Guid ID { get; set; }
         public string UserEmail { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Nazwa egzaminu jest polem wymaganym")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Opis egzaminu jest polem wymaganym")]
         public string Description { get; set; }
+
         public string StudentGroupName { get; set; }
 
+        // status - co z tym?
         [Required]
         public string ExamStatus { get; set; } 
     }

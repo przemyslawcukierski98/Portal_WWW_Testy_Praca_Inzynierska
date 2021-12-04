@@ -62,7 +62,7 @@
 
 <EditForm Model="@result">
     <ul class="list">
-        @foreach (var result in StudentTestResultService.FindEvaluatedExamsForStudent())
+        @foreach (var result in StudentTestResultService.FindEvaluatedExamsForLecturer())
         {
             <li class="group-record"><a href="/single-evaluated-exam/@result.ID">@result.ExamId</a></li>
         }
