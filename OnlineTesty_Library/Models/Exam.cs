@@ -21,6 +21,7 @@ namespace OnlineTesty_Library.Models
         [Required(ErrorMessage = "Opis egzaminu jest polem wymaganym")]
         public string Description { get; set; }
 
+        [Required(ErrorMessage = "Grupa studencka jest polem wymaganym")]
         public string StudentGroupName { get; set; }
     }
 }

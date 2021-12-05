@@ -17,6 +17,8 @@ namespace OnlineTesty_Library.Models
         public Guid ExamId { get; set; }
         public string StudentEmail { get; set; }
         public string LecturerEmail { get; set; }
+
+        [Required(ErrorMessage = "Podaj liczbę punktów zdobytych przez studenta")]
         public int StudentNumberOfPoints { get; set; }
         public int ExamNumberOfPoints { get; set; }
         public string Evaluation { get; set; }

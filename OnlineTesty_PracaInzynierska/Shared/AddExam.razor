@@ -26,6 +26,7 @@
     <div class="form-group">
         <label for="name">Grupa studencka</label><br />
         <InputSelect id="student-group" @bind-Value="exam.StudentGroupName">
+            <option value=""></option>
             @foreach (var item in StudentGroupsService.FindAllForLecturer())
             {
                 <option value="@item.Name">@item.Name</option>
