@@ -61,7 +61,12 @@
     </div>
     <div class="form-group">
         <label for="correct-answer">Poprawna odpowiedź</label>
-        <InputText id="answer-correct" @bind-Value="examQuestion.CorrectAnswerChar" class="form-control" />
+        <InputSelect id="student-group" @bind-Value="@examQuestion.CorrectAnswerChar">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </InputSelect>
     </div>
 
     <button type="submit" class="btn btn-primary">Dodaj pytanie</button><br /><br/>

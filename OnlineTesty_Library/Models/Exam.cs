@@ -22,9 +22,5 @@ namespace OnlineTesty_Library.Models
         public string Description { get; set; }
 
         public string StudentGroupName { get; set; }
-
-        // status - co z tym?
-        [Required]
-        public string ExamStatus { get; set; } 
     }
 }

@@ -39,38 +39,12 @@ namespace OnlineTesty_Library.Repositories
             this.UnitOfWork.SaveChanges();
         }
 
-        public void ChangeExamStatus(Guid examId, string newStatus)
-        {
-            Exam changeExam = this.GetDbSet<Exam>().Where(e => e.ID == examId).FirstOrDefault();
-
-            changeExam.ExamStatus = newStatus;
-            this.GetDbSet<Exam>().Update(changeExam);
-            this.UnitOfWork.SaveChanges();
-        }
-
         // listy egzaminów dla wykładowcy i studenta
         public IEnumerable<Exam> FindAssignedExams()
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony")
-                .Where(e => e.UserEmail == userEmail);
-        }
-
-        public IEnumerable<Exam> FindResolvedExams()
-        {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
-
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Rozwiązany")
-                .Where(e => e.UserEmail == userEmail);
-        }
-
-        public IEnumerable<Exam> FindEvaluatedExams()
-        {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
-
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Oceniony")
-                .Where(e => e.UserEmail == userEmail);
+            return this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
         }
 
         public IEnumerable<Exam> FindAssignedExamsForStudent()
@@ -78,8 +52,7 @@ namespace OnlineTesty_Library.Repositories
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
             var userDetails = _studentAndGroupRepositories.Read(userEmail);
 
-            return this.GetDbSet<Exam>().Where(e => e.ExamStatus == "Utworzony")
-                .Where(e => e.StudentGroupName == userDetails.StudentGroupName);
+            return this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
         }
 
         public Exam Read(Guid? ID)
@@ -101,10 +74,7 @@ namespace OnlineTesty_Library.Repositories
         Guid Create(Exam model);
         string GetExamName(Guid? ID);
         void Delete(Guid? ID);
-        void ChangeExamStatus(Guid examId, string newStatus);
         IEnumerable<Exam> FindAssignedExams();
-        IEnumerable<Exam> FindEvaluatedExams();
-        IEnumerable<Exam> FindResolvedExams();
         IEnumerable<Exam> FindAssignedExamsForStudent();
     }
 }
