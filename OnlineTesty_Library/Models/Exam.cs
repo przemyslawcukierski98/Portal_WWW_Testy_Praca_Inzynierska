@@ -13,6 +13,7 @@ namespace OnlineTesty_Library.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
+
         public string UserEmail { get; set; }
 
         [Required(ErrorMessage = "Nazwa egzaminu jest polem wymaganym")]

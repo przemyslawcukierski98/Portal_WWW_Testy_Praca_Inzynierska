@@ -15,7 +15,7 @@ namespace OnlineTesty_Library.Contexts
         {
         }
 
-        public DbSet<Exam> Exams { get; set; }
+        public DbSet<Exam> Exam { get; set; }
         public DbSet<ExamQuestion> ExamQuestions { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<StudentAndGroup> StudentsAndGroups { get; set; }
