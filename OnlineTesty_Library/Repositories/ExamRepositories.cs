@@ -43,6 +43,7 @@ namespace OnlineTesty_Library.Repositories
         public IEnumerable<Exam> FindAssignedExams()
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            var assigedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
 
             return this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
         }

@@ -1,0 +1,46 @@
+﻿@using OnlineTesty_Library.Models
+@inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService
+@inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService
+@inject IJSRuntime JsRuntime
+
+@page "/profile-student-details"
+
+@attribute [Authorize(Roles = "Student")]
+
+<h3>Szczegóły konta użytkownika</h3>
+<br />
+
+
+
+<EditForm Model="@studentAndGroup" OnValidSubmit="AddStudentToGroup">
+    <div class="form-group">
+        <label for="name">Grupa studencka</label><br />
+        <InputSelect id="student-group" disabled="@GroupSelectDisabled" @bind-Value="studentAndGroup.StudentGroupName">
+            @foreach (var item in StudentGroupsService.FindAll())
+            {
+                <option value="@item.Name">@item.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" disabled="@GroupSelectDisabled" class="btn btn-primary">Przypisz studenta do grupy</button>
+</EditForm>
+
+@code {
+    private StudentAndGroup studentAndGroup = new StudentAndGroup();
+    protected bool GroupSelectDisabled;
+
+    protected override void OnInitialized()
+    {
+        if (StudentAndGroupService.WhetherEmailIsInTheDb(studentAndGroup))
+        {
+            GroupSelectDisabled = true;
+        }
+    }
+
+    async Task AddStudentToGroup()
+    {
+        var result = StudentAndGroupService.AssignStudentToGroup(studentAndGroup);
+        await JsRuntime.InvokeVoidAsync("alert", "Student został dodany do grupy studenckiej");
+    }
+}

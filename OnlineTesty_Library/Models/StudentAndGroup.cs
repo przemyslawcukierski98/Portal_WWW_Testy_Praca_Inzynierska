@@ -13,7 +13,8 @@ namespace OnlineTesty_Library.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
-
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string StudentGroupName { get; set; }
     }

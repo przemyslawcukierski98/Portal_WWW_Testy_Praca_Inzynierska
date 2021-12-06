@@ -19,7 +19,6 @@ namespace OnlineTesty_Library.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // zapis rozwiązanego egzaminu do tabeli w bazie danych
         public Guid SaveExamSolution(StudentTestSolution model)
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim(); 
@@ -30,7 +29,6 @@ namespace OnlineTesty_Library.Repositories
             return model.ID;
         }
 
-        // wyświetlenie listy wszystkich ROZWIĄZAŃ EGZAMINÓW na podstawie maila wykładowcy
         public IEnumerable<StudentTestSolution> FindResolvedExams()
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
