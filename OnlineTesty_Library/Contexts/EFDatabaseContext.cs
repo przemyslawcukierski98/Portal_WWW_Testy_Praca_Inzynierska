@@ -17,6 +17,7 @@ namespace OnlineTesty_Library.Contexts
 
         public DbSet<Exam> Exam { get; set; }
         public DbSet<ExamQuestion> ExamQuestions { get; set; }
+        public DbSet<LecturerProfileDetails> LecturerProfileDetails { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<StudentAndGroup> StudentsAndGroups { get; set; }
         public DbSet<StudentTestSolution> StudentTestSolutions { get; set; }
@@ -31,32 +32,6 @@ namespace OnlineTesty_Library.Contexts
         {
             modelBuilder.Entity<Exam>().Property(e => e.ID).ValueGeneratedOnAdd();
         }
-
-        private void SetExamQuestions(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ExamQuestion>().Property(e => e.ID).ValueGeneratedOnAdd();
-        }
-
-        private void SetStudentGroups(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StudentGroup>().Property(e => e.ID).ValueGeneratedOnAdd();
-        }
-
-        private void SetStudentsAndGroups(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StudentAndGroup>().Property(e => e.ID).ValueGeneratedOnAdd();
-        }
-
-        private void SetStudentsTestSolutions(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StudentTestSolution>().Property(e => e.ID).ValueGeneratedOnAdd();
-        }
-
-        private void SetStudentsTestResults(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StudentTestResult>().Property(e => e.ID).ValueGeneratedOnAdd();
-        }
-
 
         public new void SaveChanges()
         {

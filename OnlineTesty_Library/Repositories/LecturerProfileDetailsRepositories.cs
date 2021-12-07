@@ -18,6 +18,16 @@ namespace OnlineTesty_Library.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public Guid AssignProfileDetailsToLecturer(LecturerProfileDetails model)
+        {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            model.EmailAddress = userEmail.Substring(67).Trim();
+
+            this.GetDbSet<LecturerProfileDetails>().Add(model);
+            this.UnitOfWork.SaveChanges();
+            return model.ID;
+        }
+
         public IEnumerable<LecturerProfileDetails> FindAll()
         {
             return this.GetDbSet<LecturerProfileDetails>();
@@ -58,6 +68,7 @@ namespace OnlineTesty_Library.Repositories
 
     public interface ILecturerProfileDetailsRepositories
     {
+        Guid AssignProfileDetailsToLecturer(LecturerProfileDetails model);
         LecturerProfileDetails Read(string emailAddress);
         IEnumerable<LecturerProfileDetails> FindAll();
         bool WhetherEmailIsInTheDb(LecturerProfileDetails model);
