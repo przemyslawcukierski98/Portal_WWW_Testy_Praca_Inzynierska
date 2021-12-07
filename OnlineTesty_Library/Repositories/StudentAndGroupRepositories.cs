@@ -65,20 +65,6 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<StudentAndGroup>()
                 .Where(e => e.EmailAddress == emailAddress).FirstOrDefault();
         }
-
-        public bool IsTheStudentHaveAGroup(string emailAddress)
-        {
-            StudentAndGroup studentAndGroup = this.GetDbSet<StudentAndGroup>().Where(e => e.EmailAddress == emailAddress).FirstOrDefault();
-
-            if(studentAndGroup != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 
     public interface IStudentAndGroupRepositories
@@ -87,6 +73,5 @@ namespace OnlineTesty_Library.Repositories
         StudentAndGroup Read(string emailAddress);
         IEnumerable<StudentAndGroup> FindAll();
         bool WhetherEmailIsInTheDb(StudentAndGroup model);
-        bool IsTheStudentHaveAGroup(string emailAddress);
     }
 }
