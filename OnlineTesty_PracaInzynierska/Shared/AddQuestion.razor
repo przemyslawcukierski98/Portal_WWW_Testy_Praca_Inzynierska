@@ -88,44 +88,16 @@
 
     protected EventCallback CreateExamEnding()
     {
-        NavigationManager.NavigateTo("main-page-lecturer");
+        if(questionIdPom != 0)
+        {
+            NavigationManager.NavigateTo("main-page-lecturer");
+        }
 
         return EventCallback.Empty;
     }
 
     async Task SubmitExamQuestion()
     {
-        if (string.IsNullOrEmpty(examQuestion.Question))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij treść pytania");
-            return;
-        }
-        else if(string.IsNullOrEmpty(examQuestion.AdditiondalDescription))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij opis pytania");
-            return;
-        }
-        else if (string.IsNullOrEmpty(examQuestion.AnswerA))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij pierwszy wariant odpowiedzi");
-            return;
-        }
-        else if(string.IsNullOrEmpty(examQuestion.AnswerB))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij drugi wariant odpowiedzi");
-            return;
-        }
-        else if (string.IsNullOrEmpty(examQuestion.AnswerC))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij trzeci wariant odpowiedzi");
-            return;
-        }
-        else if (string.IsNullOrEmpty(examQuestion.AnswerD))
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Uzupełnij czwarty wariant odpowiedzi");
-            return;
-        }
-
         examQuestion.ID = Guid.NewGuid();
         examQuestion.ExamID = await sessionStorage.GetItemAsync<Guid>("idExam");
         examQuestion.Order = questionIdPom;

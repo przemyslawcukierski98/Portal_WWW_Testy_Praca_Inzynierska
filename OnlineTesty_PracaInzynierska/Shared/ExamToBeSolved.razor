@@ -38,6 +38,7 @@
 
 <EditForm Model="@examQuestions" OnValidSubmit="SubmitStudentResult">
     <div>
+
         @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(Guid.Parse(GuidParam)))
         {
             string answerAId = item.Order + "A";

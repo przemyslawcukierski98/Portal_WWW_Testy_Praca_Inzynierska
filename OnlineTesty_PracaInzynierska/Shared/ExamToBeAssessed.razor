@@ -1,10 +1,11 @@
 ﻿@page "/exam-to-be-assessed/{GuidParam}"
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
-@inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService 
+@inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionService
 @inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionService
-@inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService 
+@inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
@@ -60,15 +61,15 @@
     <div>
         @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(ExamId))
         {
-        <ul class="list">
-            <li class="exam-question-record"><b>@item.Question</b></li>
-            <li class="exam-question-record">A: @item.AnswerA</li>
-            <li class="exam-question-record">B: @item.AnswerB</li>
-            <li class="exam-question-record">C: @item.AnswerC</li>
-            <li class="exam-question-record">D: @item.AnswerD</li>
-            <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
-            <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
-        </ul>
+            <ul class="list">
+                <li class="exam-question-record"><b>@item.Question</b></li>
+                <li class="exam-question-record">A: @item.AnswerA</li>
+                <li class="exam-question-record">B: @item.AnswerB</li>
+                <li class="exam-question-record">C: @item.AnswerC</li>
+                <li class="exam-question-record">D: @item.AnswerD</li>
+                <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
+                <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
+            </ul>
             <br /><br />
         }
     </div>
@@ -77,23 +78,25 @@
 <EditForm Model="@result" OnValidSubmit="SubmitResult">
     <div>
         <ul class="list">
-        <li class="exam-record"><b>Ilość poprawnych odpowiedzi studenta: </b>
-            <InputNumber id="answer-a" @bind-Value="@result.StudentNumberOfPoints" class="form-control" />
-        </li>
-        <li class="exam-record"><b>Wynik:</b> @result.StudentNumberOfPoints / @questionsCount </li>
+            <li class="exam-record">
+                <b>Ilość poprawnych odpowiedzi studenta: </b>
+                <InputNumber id="answer-a" @bind-Value="@result.StudentNumberOfPoints" class="form-control" />
+            </li>
+            <li class="exam-record"><b>Wynik:</b> @result.StudentNumberOfPoints / @questionsCount </li>
         </ul>
-        <li class="exam-record"><b>Ocena: </b> 
-             <InputSelect id="student-group" @bind-Value="@result.Evaluation">
-                 <option value="2.0">2.0</option>
-                 <option value="3.0">3.0</option>
-                 <option value="3.5">3.5</option>
-                 <option value="4.0">4.0</option>
-                 <option value="4.5">4.5</option>
-                 <option value="5.0">5.0</option>
-             </InputSelect>
-        </li>
-        <button type="submit" class="btn btn-primary">Zatwierdź wynik</button>
-        <br /><br />
+    <li class="exam-record">
+        <b>Ocena: </b>
+        <InputSelect id="student-group" @bind-Value="@result.Evaluation">
+            <option value="2.0">2.0</option>
+            <option value="3.0">3.0</option>
+            <option value="3.5">3.5</option>
+            <option value="4.0">4.0</option>
+            <option value="4.5">4.5</option>
+            <option value="5.0">5.0</option>
+        </InputSelect>
+    </li>
+    <button type="submit" class="btn btn-primary">Zatwierdź wynik</button>
+    <br /><br />
     </div>
 </EditForm>
 
@@ -135,7 +138,7 @@
         }
     }
 
-    void SubmitResult()
+    async Task SubmitResult()
     {
         result.ExamNumberOfPoints = questionsCount;
         result.ExamId = solution.ExamId;
@@ -144,8 +147,14 @@
 
         solution.IsEvaluated = true;
 
-        StudentTestResultService.SaveExamResult(result);
-        NavigationManager.NavigateTo("solved-exams");
-
+        if (result.StudentNumberOfPoints > result.ExamNumberOfPoints)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Liczba zdobytych punktów nie może być większa niż maksymalna ilość punktów do zdobycia");
+        }
+        else
+        {
+            StudentTestResultService.SaveExamResult(result);
+            NavigationManager.NavigateTo("solved-exams");
+        }
     }
 }
