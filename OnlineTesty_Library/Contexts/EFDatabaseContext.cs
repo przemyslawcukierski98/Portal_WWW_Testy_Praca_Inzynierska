@@ -23,6 +23,8 @@ namespace OnlineTesty_Library.Contexts
         public DbSet<StudentTestSolution> StudentTestSolutions { get; set; }
         public DbSet<StudentTestResult> StudentTestResults { get; set; }
 
+        public DbSet<StudentTestToBeSolved> StudentTestToBeSolved { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             SetExams(modelBuilder);
