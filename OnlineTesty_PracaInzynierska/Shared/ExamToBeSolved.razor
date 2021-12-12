@@ -1,9 +1,10 @@
 ﻿@page "/student-exam-to-be-solved/{GuidParam}"
 @using OnlineTesty_Library.Models
-@using System.Text 
+@using System.Text
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
 @inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionService
-@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionService 
+@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionService
+@inject OnlineTesty_Library.Repositories.IStudentTestToBeSolvedRepositories StudentTestToBeSolvedService
 @inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Student")]
@@ -75,7 +76,9 @@
 @code {
     private Exam exam = new Exam();
     private StudentTestSolution testSolution = new StudentTestSolution();
+    private StudentTestToBeSolved studentTestToBeSolved = new StudentTestToBeSolved();
     private IEnumerable<ExamQuestion> examQuestions;
+    private IEnumerable<StudentTestToBeSolved> studentTestsToBeSolved;
     private Dictionary<string, string> studentAnswers = new Dictionary<string, string>();
 
     public bool AnswerAIsChecked { get; set; }
@@ -94,13 +97,24 @@
         testSolution.ExamId = Guid.Parse(GuidParam.ToUpper());
         testSolution.ExamTitle = exam.Name;
         testSolution.LecturerEmail = exam.UserEmail;
+
+        studentTestsToBeSolved = StudentTestToBeSolvedService.FindSolutionsForStudent();
+
+        foreach (var item in studentTestsToBeSolved)
+        {
+            if (testSolution.ExamId == item.ExamId)
+            {
+                NavigationManager.NavigateTo("this-exam-is-resolved");
+            }
+        }
     }
 
     private EventCallback CheckChanged(string answerId, string answerDetails)
     {
         foreach (KeyValuePair<string, string> entry in studentAnswers)
         {
-            if (answerId.StartsWith(entry.Key.Substring(0, 1))){
+            if (answerId.StartsWith(entry.Key.Substring(0, 1)))
+            {
                 studentAnswers.Remove(entry.Key);
             }
         }
@@ -120,8 +134,12 @@
             studentAnswersCode.Append("/");
         }
 
+        studentTestToBeSolved.LecturerEmail = exam.UserEmail;
+        studentTestToBeSolved.ExamId = exam.ID;
+
         testSolution.StudentAnswersCode = studentAnswersCode.ToString();
         var result = StudentTestSolutionService.SaveExamSolution(testSolution);
+        var toBeSolved = StudentTestToBeSolvedService.SaveInfoAboutSolution(studentTestToBeSolved);
 
         GoToExamList();
     }

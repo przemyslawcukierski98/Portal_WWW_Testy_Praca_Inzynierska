@@ -19,8 +19,10 @@ namespace OnlineTesty_Library.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public IEnumerable<StudentTestToBeSolved> FindSolutionsForStudent(string userEmail)
+        public IEnumerable<StudentTestToBeSolved> FindSolutionsForStudent()
         {
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+
             return this.GetDbSet<StudentTestToBeSolved>().Where(e => e.StudentEmail == userEmail);
         }
 
@@ -38,6 +40,6 @@ namespace OnlineTesty_Library.Repositories
     public interface IStudentTestToBeSolvedRepositories
     {
         Guid SaveInfoAboutSolution(StudentTestToBeSolved model);
-        IEnumerable<StudentTestToBeSolved> FindSolutionsForStudent(string userEmail);
+        IEnumerable<StudentTestToBeSolved> FindSolutionsForStudent();
     }
 }

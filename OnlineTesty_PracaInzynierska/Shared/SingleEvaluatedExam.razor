@@ -1,9 +1,11 @@
 ﻿@page "/single-evaluated-exam/{GuidParam}"
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.ILecturerProfileDetailsRepositories LecturerProfileDetailsService
-@inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService 
+@inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService
 @inject OnlineTesty_Library.Repositories.IStudentTestResultRepositories StudentTestResultService
+@inject OnlineTesty_Library.Repositories.IStudentTestToBeSolvedRepositories StudentTestToBeSolvedService
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamService
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize]
 
@@ -35,13 +37,13 @@
     }
 </style>
 
-<br/>
+<br />
 
 <p><b>Tytuł egzaminu: </b> @result.ExamTitle </p>
 
 <p><b>Rozwiązał: </b> @studentAndGroup.FirstName @studentAndGroup.LastName</p>
 <p><b>Ocenił: </b> @lecturerProfileDetails.FirstName @lecturerProfileDetails.LastName</p>
-<br/>
+<br />
 <p><b>Liczba punktów: </b>@result.StudentNumberOfPoints/@result.ExamNumberOfPoints pkt</p>
 <p><b>Ocena: </b>@result.Evaluation</p>
 
@@ -59,6 +61,7 @@
         result = StudentTestResultService.Read(Guid.Parse(GuidParam));
         lecturerProfileDetails = LecturerProfileDetailsService.Read(result.LecturerEmail);
         studentAndGroup = StudentAndGroupService.Read(result.StudentEmail);
+
         exam = ExamService.Read(result.ExamId);
     }
 }
