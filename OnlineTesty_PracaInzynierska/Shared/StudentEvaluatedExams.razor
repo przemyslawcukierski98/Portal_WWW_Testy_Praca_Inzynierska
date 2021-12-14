@@ -64,7 +64,7 @@
     <ul class="list">
         @foreach (var result in TestResultService.FindEvaluatedExamsForStudent())
         {
-            <li class="group-record"><a href="/single-evaluated-exam/@result.ID">@result.ExamId</a></li>
+            <li class="group-record"><a href="/single-evaluated-exam/@result.ID">Student: @result.StudentEmail, Tytuł: @result.ExamTitle</a></li>
         }
     </ul>
 </EditForm>
