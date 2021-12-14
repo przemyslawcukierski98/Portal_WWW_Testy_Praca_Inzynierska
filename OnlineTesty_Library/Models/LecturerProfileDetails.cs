@@ -13,7 +13,9 @@ namespace OnlineTesty_Library.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
+        [Required(ErrorMessage = "Imię jest polem wymaganym")]
         public string FirstName { get; set; }
+        [Required(ErrorMessage = "Nazwisko jest polem wymaganym")]
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
     }

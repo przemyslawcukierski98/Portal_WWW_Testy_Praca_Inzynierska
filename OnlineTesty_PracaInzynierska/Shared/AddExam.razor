@@ -12,7 +12,6 @@
 
 <EditForm Model="@exam" OnValidSubmit="SubmitExam">
     <DataAnnotationsValidator />
-    <ValidationSummary />
     <div class="form-group">
         <label for="name">Tytuł egzaminu</label>
         <InputText id="Name" @bind-Value="exam.Name" class="form-control" />
@@ -42,6 +41,11 @@
 
     protected void SubmitExam()
     {
+        if(exam.StudentGroupName == null)
+        {
+            return;
+        }
+
         bool nameIsEmpty = string.IsNullOrEmpty(exam.Name);
         bool descriptionIsEmpty = string.IsNullOrEmpty(exam.Description);
 

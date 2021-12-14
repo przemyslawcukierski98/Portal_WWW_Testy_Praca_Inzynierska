@@ -10,17 +10,19 @@
 <br />
 
 <EditForm Model="@lecturerProfileDetails" OnValidSubmit="AddLecturerDetails">
-
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="name">Imię</label><br />
         <InputText disabled="@FieldsDisabled" id="Name" @bind-Value="lecturerProfileDetails.FirstName" class="form-control" />
+        <ValidationMessage For="() => lecturerProfileDetails.FirstName" />
     </div>
     <div class="form-group">
         <label for="name">Nazwisko</label><br />
         <InputText disabled="@FieldsDisabled" id="Name" @bind-Value="lecturerProfileDetails.LastName" class="form-control" />
+        <ValidationMessage For="() => lecturerProfileDetails.LastName" />
     </div>
 
-    <button type="submit" disabled="@FieldsDisabled" class="btn btn-primary">Przypisz studenta do grupy</button>
+    <button type="submit" disabled="@FieldsDisabled" class="btn btn-primary">Zapisz</button>
 </EditForm>
 
 

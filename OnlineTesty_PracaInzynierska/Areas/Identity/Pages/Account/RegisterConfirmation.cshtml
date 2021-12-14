@@ -5,7 +5,11 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<h2>Twoje konto zostało pomyślnie zarejestrowane!</h2>
 @{
-
+    if (@Model.DisplayConfirmAccountLink)
+    {
+        <p>
+            Twoje konto zostało zarejestrowane. Kliknij w <a id="confirm-link" href="@Model.EmailConfirmationUrl">link</a>, aby potwierdzić rejestrację.
+        </p>
+    }
 }
