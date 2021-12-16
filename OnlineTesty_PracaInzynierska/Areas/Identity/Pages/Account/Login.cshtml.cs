@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account
 {
@@ -97,7 +98,7 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account
                     return RedirectToPage("./Lockout");
                 }
                 else
-                {
+                { 
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
