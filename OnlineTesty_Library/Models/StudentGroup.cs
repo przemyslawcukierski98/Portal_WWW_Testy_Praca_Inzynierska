@@ -13,7 +13,7 @@ namespace OnlineTesty_Library.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Nazwa grupy studenckiej jest polem wymaganym")]
         public string Name { get; set; }
         public string LecturerEmail { get; set; }
         public bool IsActive { get; set; }

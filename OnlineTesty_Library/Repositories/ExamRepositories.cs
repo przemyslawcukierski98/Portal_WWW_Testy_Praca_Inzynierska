@@ -52,8 +52,16 @@ namespace OnlineTesty_Library.Repositories
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
             var userDetails = _studentAndGroupRepositories.Read(userEmail);
+            List<Exam> emptylist = new List<Exam>();
 
-            return this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
+           if (userDetails != null)
+           {
+                return this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
+           }
+           else
+           {
+                return emptylist;
+           } 
         }
 
         public Exam Read(Guid? ID)

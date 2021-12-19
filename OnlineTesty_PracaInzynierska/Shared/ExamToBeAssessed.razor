@@ -153,6 +153,10 @@
         {
             await JsRuntime.InvokeVoidAsync("alert", "Liczba zdobytych punktów nie może być większa niż maksymalna ilość punktów do zdobycia");
         }
+        else if(result.StudentNumberOfPoints < 0)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Liczba zdobytych punktów musi być większa lub równa zeru");
+        }
         else
         {
             StudentTestResultService.SaveExamResult(result);
