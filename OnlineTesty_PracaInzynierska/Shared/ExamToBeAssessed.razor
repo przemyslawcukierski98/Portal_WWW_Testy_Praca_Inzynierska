@@ -69,6 +69,11 @@
                 <li class="exam-question-record">D: @item.AnswerD</li>
                 <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
                 <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
+
+                @if(item.CorrectAnswerChar.Equals(studentAnswerCodes.ElementAt(item.Order).ToString()))
+                {
+                    result.StudentNumberOfPoints++;
+                }
             </ul>
             <br /><br />
         }
@@ -78,10 +83,6 @@
 <EditForm Model="@result" OnValidSubmit="SubmitResult">
     <div>
         <ul class="list">
-            <li class="exam-record">
-                <b>Ilość poprawnych odpowiedzi studenta: </b>
-                <InputNumber id="answer-a" @bind-Value="@result.StudentNumberOfPoints" class="form-control" />
-            </li>
             <li class="exam-record"><b>Wynik:</b> @result.StudentNumberOfPoints / @questionsCount </li>
         </ul>
     <li class="exam-record">
