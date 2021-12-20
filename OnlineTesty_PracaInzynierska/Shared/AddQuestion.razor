@@ -84,6 +84,10 @@
 @code {
 
     private ExamQuestion examQuestion = new ExamQuestion();
+    private InputText AnswerA;
+    private InputText AnswerB;
+    private InputText AnswerC;
+    private InputText AnswerD;
     private int questionIdPom = 0;
 
     protected EventCallback CreateExamEnding()
@@ -110,6 +114,19 @@
         var result = ExamQuestionsService.Create(examQuestion);
         questionIdPom++;
 
+        FieldsCleaning();
+
         await JsRuntime.InvokeVoidAsync("alert", "Pytanie zostało dodane pomyślnie");
+    }
+
+    protected void FieldsCleaning()
+    {
+        examQuestion.Question = string.Empty;
+        examQuestion.AdditiondalDescription = string.Empty;
+        examQuestion.AnswerA = string.Empty;
+        examQuestion.AnswerB = string.Empty;
+        examQuestion.AnswerC = string.Empty;
+        examQuestion.AnswerD = string.Empty;
+        examQuestion.CorrectAnswerChar = "A";
     }
 }
