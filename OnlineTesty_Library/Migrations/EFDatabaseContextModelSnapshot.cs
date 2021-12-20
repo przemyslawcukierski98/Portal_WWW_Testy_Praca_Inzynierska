@@ -16,7 +16,7 @@ namespace OnlineTesty_Library.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("OnlineTesty_Library.Models.Exam", b =>
@@ -99,9 +99,11 @@ namespace OnlineTesty_Library.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -119,12 +121,15 @@ namespace OnlineTesty_Library.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentGroupName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -167,6 +172,9 @@ namespace OnlineTesty_Library.Migrations
 
                     b.Property<int>("ExamNumberOfPoints")
                         .HasColumnType("int");
+
+                    b.Property<string>("ExamTitle")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LecturerEmail")
                         .HasColumnType("nvarchar(max)");
@@ -219,9 +227,6 @@ namespace OnlineTesty_Library.Migrations
 
                     b.Property<Guid>("ExamId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsSolved")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LecturerEmail")
                         .HasColumnType("nvarchar(max)");

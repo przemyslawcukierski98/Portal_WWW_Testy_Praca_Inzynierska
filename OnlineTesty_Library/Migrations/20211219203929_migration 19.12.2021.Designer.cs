@@ -10,15 +10,15 @@ using OnlineTesty_Library.Contexts;
 namespace OnlineTesty_Library.Migrations
 {
     [DbContext(typeof(EFDatabaseContext))]
-    [Migration("20211205120343_migration 05_12_2021_1")]
-    partial class migration05_12_2021_1
+    [Migration("20211219203929_migration 19.12.2021")]
+    partial class migration19122021
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("OnlineTesty_Library.Models.Exam", b =>
@@ -36,6 +36,7 @@ namespace OnlineTesty_Library.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentGroupName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserEmail")
@@ -43,7 +44,7 @@ namespace OnlineTesty_Library.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Exams");
+                    b.ToTable("Exam");
                 });
 
             modelBuilder.Entity("OnlineTesty_Library.Models.ExamQuestion", b =>
@@ -90,6 +91,28 @@ namespace OnlineTesty_Library.Migrations
                     b.ToTable("ExamQuestions");
                 });
 
+            modelBuilder.Entity("OnlineTesty_Library.Models.LecturerProfileDetails", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("LecturerProfileDetails");
+                });
+
             modelBuilder.Entity("OnlineTesty_Library.Models.StudentAndGroup", b =>
                 {
                     b.Property<Guid>("ID")
@@ -99,7 +122,16 @@ namespace OnlineTesty_Library.Migrations
                     b.Property<string>("EmailAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StudentGroupName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -143,6 +175,9 @@ namespace OnlineTesty_Library.Migrations
                     b.Property<int>("ExamNumberOfPoints")
                         .HasColumnType("int");
 
+                    b.Property<string>("ExamTitle")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LecturerEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -184,6 +219,26 @@ namespace OnlineTesty_Library.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("StudentTestSolutions");
+                });
+
+            modelBuilder.Entity("OnlineTesty_Library.Models.StudentTestToBeSolved", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExamId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LecturerEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudentEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("StudentTestToBeSolved");
                 });
 #pragma warning restore 612, 618
         }
