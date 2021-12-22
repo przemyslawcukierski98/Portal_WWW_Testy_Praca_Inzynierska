@@ -40,12 +40,29 @@ namespace OnlineTesty_Library.Repositories
         }
 
         // listy egzaminów dla wykładowcy i studenta
-        public IEnumerable<Exam> FindAssignedExams()
+        public IEnumerable<Exam> FindAssignedExams(string nameFilter, string groupFilter)
         {
+            IQueryable<Exam> assignedExams;
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
-            var assigedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
 
-            return this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
+            if(nameFilter != null && groupFilter != null)
+            {
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(nameFilter)).Where(e => e.StudentGroupName.Contains(groupFilter));
+            }
+            else if(nameFilter != null && groupFilter == null)
+            {
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(nameFilter));
+            }
+            else if(nameFilter == null && groupFilter != null)
+            {
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.StudentGroupName.Contains(groupFilter));
+            }
+            else
+            {
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
+            }
+
+            return assignedExams;
         }
 
         public IEnumerable<Exam> FindAssignedExamsForStudent()
@@ -83,7 +100,7 @@ namespace OnlineTesty_Library.Repositories
         Guid Create(Exam model);
         string GetExamName(Guid? ID);
         void Delete(Guid? ID);
-        IEnumerable<Exam> FindAssignedExams();
+        IEnumerable<Exam> FindAssignedExams(string nameFilter, string groupFilter);
         IEnumerable<Exam> FindAssignedExamsForStudent();
     }
 }
