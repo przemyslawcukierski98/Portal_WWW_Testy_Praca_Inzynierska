@@ -60,9 +60,24 @@
         }
 </style>
 
+<EditForm Model="@filter">
+    <div class="form-group">
+        <label for="Question">Nazwa egzaminu</label>
+        <InputText id="NameFilter" @bind-Value="filter.NameFilter" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Question">Nazwisko studenta</label>
+        <InputText id="StudentFilter" @bind-Value="filter.StudentFilter" class="form-control" />
+    </div>
+</EditForm>
+
+<input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Filtruj" @onclick="eventArgs => { CreateFilter(); }">
+<br />
+<br />
+
 <EditForm Model="@result">
     <ul class="list">
-        @foreach (var result in StudentTestResultService.FindEvaluatedExamsForLecturer())
+        @foreach (var result in StudentTestResultService.FindEvaluatedExamsForLecturer(nameFilter, studentFilter))
         {
             <li class="group-record"><a href="/single-evaluated-exam/@result.ID">Student: @result.StudentEmail, Tytuł: @result.ExamTitle</a></li>
         }
@@ -71,4 +86,13 @@
 
 @code {
     private new StudentTestResult result = new StudentTestResult();
+    private ExamFilter filter = new ExamFilter();
+    private string nameFilter;
+    private string studentFilter;
+
+    protected void CreateFilter()
+    {
+        nameFilter = filter.NameFilter;
+        studentFilter = filter.StudentFilter;
+    }
 }

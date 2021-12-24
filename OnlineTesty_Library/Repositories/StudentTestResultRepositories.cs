@@ -13,10 +13,13 @@ namespace OnlineTesty_Library.Repositories
     public class StudentTestResultRepositories : BaseRepositoryEF, IStudentTestResultRepositories
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
 
-        public StudentTestResultRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        public StudentTestResultRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+            IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
+            _studentAndGroupRepositories = studentAndGroupRepositories;
         }
 
         public IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent()
@@ -26,11 +29,46 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == studentEmail);
         }
 
-        public IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer()
+        public IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer(string titleFilter, string studentFilter)
         {
+            IQueryable<StudentTestResult> evaluatedExams = Enumerable.Empty<StudentTestResult>().AsQueryable();
+            StudentAndGroup studentAndGroup = new StudentAndGroup();
+            string studentEmail = string.Empty;
+
+            if (titleFilter == null) titleFilter = string.Empty;
+            if (studentFilter == null) studentFilter = string.Empty;
+
+            studentAndGroup = _studentAndGroupRepositories.ReadByLastName(studentFilter);
+
+            if (studentAndGroup != null)
+            {
+                studentEmail = studentAndGroup.EmailAddress;
+            }
+
             var lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            return this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail);
+            if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            {
+                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.ExamTitle.Contains(titleFilter))
+                .Where(e => e.StudentEmail == studentEmail);
+            }
+            else if((titleFilter != null && !titleFilter.Equals("")) && (studentFilter == null || studentFilter.Equals("")))
+            {
+                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.ExamTitle.Contains(titleFilter));
+            }
+            else if((titleFilter == null || titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            {
+                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.StudentEmail == studentEmail);
+            }
+            else
+            {
+                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail);
+            }
+
+            return evaluatedExams;
         }
 
         public StudentTestResult Read(Guid? ID)
@@ -52,6 +90,6 @@ namespace OnlineTesty_Library.Repositories
         StudentTestResult Read(Guid? ID);
         Guid SaveExamResult(StudentTestResult model);
         IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent();
-        IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer();
+        IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer(string titleFilter, string studentFilter);
     }
 }

@@ -40,20 +40,20 @@ namespace OnlineTesty_Library.Repositories
         }
 
         // listy egzaminów dla wykładowcy i studenta
-        public IEnumerable<Exam> FindAssignedExams(string nameFilter, string groupFilter)
+        public IEnumerable<Exam> FindAssignedExams(string titleFilter, string groupFilter)
         {
             IQueryable<Exam> assignedExams;
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            if(nameFilter != null && groupFilter != null)
+            if(titleFilter != null && groupFilter != null)
             {
-                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(nameFilter)).Where(e => e.StudentGroupName.Contains(groupFilter));
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(titleFilter)).Where(e => e.StudentGroupName.Contains(groupFilter));
             }
-            else if(nameFilter != null && groupFilter == null)
+            else if(titleFilter != null && groupFilter == null)
             {
-                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(nameFilter));
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(titleFilter));
             }
-            else if(nameFilter == null && groupFilter != null)
+            else if(titleFilter == null && groupFilter != null)
             {
                 assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.StudentGroupName.Contains(groupFilter));
             }

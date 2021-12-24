@@ -65,12 +65,19 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<StudentAndGroup>()
                 .Where(e => e.EmailAddress == emailAddress).FirstOrDefault();
         }
+
+        public StudentAndGroup ReadByLastName(string lastName)
+        {
+            return this.GetDbSet<StudentAndGroup>()
+                .Where(e => e.LastName == lastName).FirstOrDefault();
+        }
     }
 
     public interface IStudentAndGroupRepositories
     {
         Guid AssignStudentToGroup(StudentAndGroup model);
         StudentAndGroup Read(string emailAddress);
+        StudentAndGroup ReadByLastName(string lastName);
         IEnumerable<StudentAndGroup> FindAll();
         bool WhetherEmailIsInTheDb(StudentAndGroup model);
     }
