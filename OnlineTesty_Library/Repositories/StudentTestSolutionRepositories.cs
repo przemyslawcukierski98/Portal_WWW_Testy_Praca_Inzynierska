@@ -13,10 +13,13 @@ namespace OnlineTesty_Library.Repositories
     public class StudentTestSolutionRepositories : BaseRepositoryEF, IStudentTestSolutionRepositories
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
 
-        public StudentTestSolutionRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        public StudentTestSolutionRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+            IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
+            _studentAndGroupRepositories = studentAndGroupRepositories;
         }
 
         public Guid SaveExamSolution(StudentTestSolution model)
@@ -29,12 +32,50 @@ namespace OnlineTesty_Library.Repositories
             return model.ID;
         }
 
-        public IEnumerable<StudentTestSolution> FindResolvedExams()
+        public IEnumerable<StudentTestSolution> FindResolvedExamsForLecturer(string titleFilter, string groupFilter, string studentFilter)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            IQueryable<StudentTestSolution> resolvedExams = Enumerable.Empty<StudentTestSolution>().AsQueryable();
+            StudentAndGroup studentAndGroup = new StudentAndGroup();
+            string userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string studentEmail = string.Empty;
+            string lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            return this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == userEmail)
-                .Where(e => e.IsEvaluated == false);
+            if (titleFilter == null) titleFilter = string.Empty;
+            if (studentFilter == null) studentFilter = string.Empty;
+            if (groupFilter == null) groupFilter = string.Empty;
+
+            studentAndGroup = _studentAndGroupRepositories.ReadByLastName(studentFilter);
+
+            if (studentAndGroup != null)
+            {
+                studentEmail = studentAndGroup.EmailAddress;
+            }
+
+            // ten warunek nie może tak wyglądać - zrobić metodę w tej klasie lub klase statyczną?
+            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, studentFilter, groupFilter);
+
+            if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            {
+                resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.ExamTitle.Contains(titleFilter))
+                .Where(e => e.StudentEmail == studentEmail);
+            }
+            else if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter == null || studentFilter.Equals("")))
+            {
+                resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.ExamTitle.Contains(titleFilter));
+            }
+            else if ((titleFilter == null || titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            {
+                resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
+                .Where(e => e.StudentEmail == studentEmail);
+            }
+            else
+            {
+                resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail);
+            }
+
+            return resolvedExams;
         }
 
         public StudentTestSolution GetSolution(Guid? ID)
@@ -48,6 +89,6 @@ namespace OnlineTesty_Library.Repositories
     {
         Guid SaveExamSolution(StudentTestSolution model);
         StudentTestSolution GetSolution(Guid? ID);
-        IEnumerable<StudentTestSolution> FindResolvedExams();
+        IEnumerable<StudentTestSolution> FindResolvedExamsForLecturer(string titleFilter, string groupFilter, string studentFilter);
     }
 }

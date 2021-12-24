@@ -34,6 +34,7 @@ namespace OnlineTesty_Library.Repositories
             IQueryable<StudentTestResult> evaluatedExams = Enumerable.Empty<StudentTestResult>().AsQueryable();
             StudentAndGroup studentAndGroup = new StudentAndGroup();
             string studentEmail = string.Empty;
+            string lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
             if (titleFilter == null) titleFilter = string.Empty;
             if (studentFilter == null) studentFilter = string.Empty;
@@ -45,20 +46,21 @@ namespace OnlineTesty_Library.Repositories
                 studentEmail = studentAndGroup.EmailAddress;
             }
 
-            var lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            // walidacja
+            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, studentFilter, null);
 
-            if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            if (validation.TitleFilterIsFilled && validation.StudentFilterIsFilled)
             {
                 evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.ExamTitle.Contains(titleFilter))
                 .Where(e => e.StudentEmail == studentEmail);
             }
-            else if((titleFilter != null && !titleFilter.Equals("")) && (studentFilter == null || studentFilter.Equals("")))
+            else if(validation.TitleFilterIsFilled && validation.StudentFilterIsNullOrEmpty)
             {
                 evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.ExamTitle.Contains(titleFilter));
             }
-            else if((titleFilter == null || titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            else if(validation.TitleFilterIsNullOrEmpty && validation.StudentFilterIsFilled)
             {
                 evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.StudentEmail == studentEmail);
