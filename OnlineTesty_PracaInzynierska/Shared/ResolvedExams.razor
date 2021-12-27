@@ -2,9 +2,9 @@
 
 @using OnlineTesty_Library.Models
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
-@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionsService 
+@inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
-@inject NavigationManager NavigationManager 
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
 
@@ -87,9 +87,24 @@
         }
 </style>
 
+<EditForm Model="@filter">
+    <div class="form-group">
+        <label for="Question">Nazwa egzaminu</label>
+        <InputText id="NameFilter" @bind-Value="filter.NameFilter" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Question">Nazwisko studenta</label>
+        <InputText id="GroupFilter" @bind-Value="filter.StudentFilter" class="form-control" />
+    </div>
+</EditForm>
+
+<input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Filtruj" @onclick="eventArgs => { CreateFilter(); }">
+<br /><br />
+
+
 <EditForm Model="@solution">
     <ul class="list">
-        @foreach (var item in StudentTestSolutionsService.FindResolvedExamsForLecturer(null, null, null))
+        @foreach (var item in StudentTestSolutionsService.FindResolvedExamsForLecturer(titleFilter, null, studentFilter))
         {
             <li class="group-record"><a href="/exam-to-be-assessed/@item.ID">Student: @item.StudentEmail, egzamin: @item.ExamTitle</a></li>
         }
@@ -98,5 +113,15 @@
 
 @code {
     private Exam exam = new Exam();
+    private ExamFilter filter = new ExamFilter();
+    private string titleFilter;
+    private string studentFilter;
+
     private StudentTestSolution solution = new StudentTestSolution();
+
+    protected void CreateFilter()
+    {
+        titleFilter = filter.NameFilter;
+        studentFilter = filter.StudentFilter;
+    }
 }
