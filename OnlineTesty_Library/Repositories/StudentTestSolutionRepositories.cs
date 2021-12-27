@@ -54,18 +54,18 @@ namespace OnlineTesty_Library.Repositories
             // ten warunek nie może tak wyglądać - zrobić metodę w tej klasie lub klase statyczną?
             ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, studentFilter, groupFilter);
 
-            if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            if ((validation.TitleFilterIsFilled) && (validation.StudentFilterIsFilled))
             {
                 resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.ExamTitle.Contains(titleFilter))
                 .Where(e => e.StudentEmail == studentEmail);
             }
-            else if ((titleFilter != null && !titleFilter.Equals("")) && (studentFilter == null || studentFilter.Equals("")))
+            else if ((validation.TitleFilterIsFilled) && (validation.StudentFilterIsNullOrEmpty))
             {
                 resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.ExamTitle.Contains(titleFilter));
             }
-            else if ((titleFilter == null || titleFilter.Equals("")) && (studentFilter != null && !studentFilter.Equals("")))
+            else if ((validation.TitleFilterIsNullOrEmpty) && (validation.StudentFilterIsFilled))
             {
                 resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.StudentEmail == studentEmail);
