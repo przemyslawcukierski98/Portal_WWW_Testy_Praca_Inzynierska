@@ -3,13 +3,37 @@
 
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
-@inject NavigationManager NavigationManager     
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Student")]
 
 <h3>Egzaminy do rozwiązania</h3>
 
 <style>
+    .btnCreateExamEnding_style {
+        box-shadow: inset 0px 39px 0px -24px #e67a73;
+        background: linear-gradient(to bottom, #e4685d 5%, #eb675e 100%);
+        background-color: #e4685d;
+        display: inline-block;
+        cursor: pointer;
+        color: #ffffff;
+        font-family: Arial;
+        font-size: 15px;
+        padding: 5px 10px;
+        text-decoration: none;
+        text-shadow: 0px 1px 50px #b23e35;
+    }
+
+        .btnCreateExamEnding_style:hover {
+            background: linear-gradient(to bottom, #eb675e 5%, #e4685d 100%);
+            background-color: #eb675e;
+        }
+
+        .btnCreateExamEnding_style:active {
+            position: relative;
+            top: 1px;
+        }
+
     .list {
         list-style-type: none;
         padding: 0;
@@ -61,9 +85,24 @@
         }
 </style>
 
+<EditForm Model="@filter">
+    <div class="form-group">
+        <label for="Question">Nazwa egzaminu</label>
+        <InputText id="NameFilter" @bind-Value="filter.NameFilter" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Question">Nazwisko wykładowcy</label>
+        <InputText id="GroupFilter" @bind-Value="filter.LecturerFilter" class="form-control" />
+    </div>
+</EditForm>
+
+<input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Filtruj" @onclick="eventArgs => { CreateFilter(); }">
+<br />
+<br />
+
 <EditForm Model="@exam">
     <ul class="list">
-        @foreach (var exam in ExamsService.FindAssignedExamsForStudent())
+        @foreach (var exam in ExamsService.FindAssignedExamsForStudent(nameFilter, lecturerFilter))
         {
             <li class="group-record"><a href="/student-exam-to-be-solved/@exam.ID">@exam.Name</a></li>
         }
@@ -72,4 +111,13 @@
 
 @code {
     private Exam exam = new Exam();
+    private ExamFilter filter = new ExamFilter();
+    private string nameFilter;
+    private string lecturerFilter;
+
+    protected void CreateFilter()
+    {
+        nameFilter = filter.NameFilter;
+        lecturerFilter = filter.LecturerFilter;
+    }
 }

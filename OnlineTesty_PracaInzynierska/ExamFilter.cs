@@ -12,5 +12,6 @@ namespace OnlineTesty_PracaInzynierska
         public string GroupFilter { get; set; }
 
         public string StudentFilter { get; set; }
+        public string LecturerFilter { get; set; }
     }
 }

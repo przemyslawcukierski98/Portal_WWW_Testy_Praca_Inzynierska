@@ -14,6 +14,7 @@ namespace OnlineTesty_Library.Repositories
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
+        
 
         public StudentTestResultRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
             IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)

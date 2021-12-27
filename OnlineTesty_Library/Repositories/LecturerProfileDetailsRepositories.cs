@@ -39,6 +39,12 @@ namespace OnlineTesty_Library.Repositories
                 .Where(e => e.EmailAddress == emailAddress).FirstOrDefault();
         }
 
+        public LecturerProfileDetails ReadByLastName(string lastName)
+        {
+            return this.GetDbSet<LecturerProfileDetails>()
+                .Where(e => e.LastName == lastName).FirstOrDefault();
+        }
+
         public bool WhetherEmailIsInTheDb(LecturerProfileDetails model)
         {
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
@@ -70,6 +76,7 @@ namespace OnlineTesty_Library.Repositories
     {
         Guid AssignProfileDetailsToLecturer(LecturerProfileDetails model);
         LecturerProfileDetails Read(string emailAddress);
+        LecturerProfileDetails ReadByLastName(string lastName);
         IEnumerable<LecturerProfileDetails> FindAll();
         bool WhetherEmailIsInTheDb(LecturerProfileDetails model);
     }

@@ -14,12 +14,15 @@ namespace OnlineTesty_Library.Repositories
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
+        private readonly ILecturerProfileDetailsRepositories _lecturerProfileDetailsRepositories;
 
         public ExamRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
-            IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)
+            IStudentAndGroupRepositories studentAndGroupRepositories,
+            ILecturerProfileDetailsRepositories lecturerProfileDetailsRepositories) : base(unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
             _studentAndGroupRepositories = studentAndGroupRepositories;
+            _lecturerProfileDetailsRepositories = lecturerProfileDetailsRepositories;
         }
 
         public Guid Create(Exam model)
@@ -45,15 +48,18 @@ namespace OnlineTesty_Library.Repositories
             IQueryable<Exam> assignedExams;
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            if(titleFilter != null && groupFilter != null)
+            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, groupFilter, null);
+
+            if (validation.TitleFilterIsFilled && validation.GroupFilterIsFilled)
             {
-                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(titleFilter)).Where(e => e.StudentGroupName.Contains(groupFilter));
+                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(titleFilter)).
+                    Where(e => e.StudentGroupName.Contains(groupFilter));
             }
-            else if(titleFilter != null && groupFilter == null)
+            else if(validation.TitleFilterIsFilled && validation.GroupFilterIsNullOrEmpty)
             {
                 assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.Name.Contains(titleFilter));
             }
-            else if(titleFilter == null && groupFilter != null)
+            else if(validation.TitleFilterIsNullOrEmpty && validation.GroupFilterIsFilled)
             {
                 assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.StudentGroupName.Contains(groupFilter));
             }
@@ -65,20 +71,56 @@ namespace OnlineTesty_Library.Repositories
             return assignedExams;
         }
 
-        public IEnumerable<Exam> FindAssignedExamsForStudent()
+        public IEnumerable<Exam> FindAssignedExamsForStudent(string titleFilter, string lecturerFilter)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
-            var userDetails = _studentAndGroupRepositories.Read(userEmail);
+            IQueryable<Exam> assignedExams = Enumerable.Empty<Exam>().AsQueryable();
+            LecturerProfileDetails lecturerProfileDetails = new LecturerProfileDetails();
+            string studentEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string lecturerEmail = string.Empty;
+            var userDetails = _studentAndGroupRepositories.Read(studentEmail);
             List<Exam> emptylist = new List<Exam>();
 
-           if (userDetails != null)
-           {
-                return this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
-           }
-           else
-           {
+            if (titleFilter == null) titleFilter = string.Empty;
+            if (lecturerFilter == null) lecturerFilter = string.Empty;
+
+            lecturerProfileDetails = _lecturerProfileDetailsRepositories.ReadByLastName(lecturerFilter);
+
+            if(lecturerProfileDetails != null)
+            {
+                lecturerEmail = lecturerProfileDetails.EmailAddress;
+            }
+
+            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, lecturerFilter, null);
+
+            if (userDetails != null)
+            {
+                if(validation.TitleFilterIsFilled && validation.StudentFilterIsFilled)
+                {
+                    assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName)
+                        .Where(e => e.Name.Contains(titleFilter))
+                        .Where(e => e.UserEmail == lecturerEmail);
+                }
+                else if(validation.TitleFilterIsFilled && validation.StudentFilterIsNullOrEmpty)
+                {
+                    assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName)
+                        .Where(e => e.Name.Contains(titleFilter));
+                }
+                else if(validation.TitleFilterIsNullOrEmpty && validation.StudentFilterIsFilled)
+                {
+                    assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName)
+                        .Where(e => e.UserEmail == lecturerEmail);
+                }
+                else
+                {
+                    assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
+                }
+
+                return assignedExams;
+            }
+            else
+            {    
                 return emptylist;
-           } 
+            } 
         }
 
         public Exam Read(Guid? ID)
@@ -101,6 +143,6 @@ namespace OnlineTesty_Library.Repositories
         string GetExamName(Guid? ID);
         void Delete(Guid? ID);
         IEnumerable<Exam> FindAssignedExams(string nameFilter, string groupFilter);
-        IEnumerable<Exam> FindAssignedExamsForStudent();
+        IEnumerable<Exam> FindAssignedExamsForStudent(string titleFilter, string lecturerFilter);
     }
 }
