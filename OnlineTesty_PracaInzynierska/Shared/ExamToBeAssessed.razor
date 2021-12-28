@@ -70,12 +70,16 @@
                 <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
                 <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
 
-                @if(item.CorrectAnswerChar.Equals(studentAnswerCodes.ElementAt(item.Order).ToString()))
+                @if(item.CorrectAnswerChar.Equals(studentAnswerCodes.ElementAt(item.Order).ToString()) && questionsAreChecked == false)
                 {
                     result.StudentNumberOfPoints++;
                 }
             </ul>
             <br /><br />
+        }
+        @if(true)
+        {
+            questionsAreChecked = true;
         }
     </div>
 </EditForm>
@@ -114,6 +118,7 @@
     private char separator = '/';
     private int pointsSum = 0;
     private int questionsCount = 0;
+    private bool questionsAreChecked = false;
 
     [Parameter]
     public string GuidParam { get; set; }
