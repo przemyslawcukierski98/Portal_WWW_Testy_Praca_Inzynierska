@@ -101,6 +101,7 @@
 <br />
 
 <EditForm Model="@exam">
+
     <ul class="list">
         @foreach (var exam in ExamsService.FindAssignedExamsForStudent(nameFilter, lecturerFilter))
         {
