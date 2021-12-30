@@ -70,10 +70,6 @@ namespace OnlineTesty_Library.Repositories
                 resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.StudentEmail == studentEmail);
             }
-            else
-            {
-                resolvedExams = this.GetDbSet<StudentTestSolution>().Where(e => e.LecturerEmail == lecturerEmail);
-            }
 
             return resolvedExams;
         }

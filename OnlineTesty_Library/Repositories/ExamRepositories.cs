@@ -45,7 +45,7 @@ namespace OnlineTesty_Library.Repositories
         // listy egzaminów dla wykładowcy i studenta
         public IEnumerable<Exam> FindAssignedExams(string titleFilter, string groupFilter)
         {
-            IQueryable<Exam> assignedExams;
+            IQueryable<Exam> assignedExams = Enumerable.Empty<Exam>().AsQueryable();
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
             ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, groupFilter, null);
@@ -62,10 +62,6 @@ namespace OnlineTesty_Library.Repositories
             else if(validation.TitleFilterIsNullOrEmpty && validation.GroupFilterIsFilled)
             {
                 assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail).Where(e => e.StudentGroupName.Contains(groupFilter));
-            }
-            else
-            {
-                assignedExams = this.GetDbSet<Exam>().Where(e => e.UserEmail == userEmail);
             }
 
             return assignedExams;
@@ -109,10 +105,6 @@ namespace OnlineTesty_Library.Repositories
                 {
                     assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName)
                         .Where(e => e.UserEmail == lecturerEmail);
-                }
-                else
-                {
-                    assignedExams = this.GetDbSet<Exam>().Where(e => e.StudentGroupName == userDetails.StudentGroupName);
                 }
 
                 return assignedExams;

@@ -9,6 +9,7 @@
 @attribute [Authorize(Roles = "Lecturer")]
 
 <h3>Rozwiązane egzaminy</h3>
+<h5>Aby wyświetlić rozwiązane egzaminy, uzupełnij przynajmniej jeden z filtrów</h5>
 <br />
 
 <style>
@@ -99,7 +100,8 @@
 </EditForm>
 
 <input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Filtruj" @onclick="eventArgs => { CreateFilter(); }">
-<br /><br />
+<br />
+<br />
 
 
 <EditForm Model="@solution">

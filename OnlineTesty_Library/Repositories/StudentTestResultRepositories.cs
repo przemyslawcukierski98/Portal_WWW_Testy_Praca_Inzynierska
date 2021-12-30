@@ -61,10 +61,6 @@ namespace OnlineTesty_Library.Repositories
                 evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.StudentEmail == studentEmail);
             }
-            else
-            {
-                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == studentEmail);
-            }
 
             return evaluatedExams;
         }
@@ -104,10 +100,6 @@ namespace OnlineTesty_Library.Repositories
             {
                 evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail)
                 .Where(e => e.StudentEmail == studentEmail);
-            }
-            else
-            {
-                evaluatedExams = this.GetDbSet<StudentTestResult>().Where(e => e.LecturerEmail == lecturerEmail);
             }
 
             return evaluatedExams;
