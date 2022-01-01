@@ -44,26 +44,23 @@
             // popup do zmiany informacji o userze
             @if(ShowPopup)
             {
-                <!-- This is the popup to create or edit a user -->
                 <div class="modal" tabindex="-1" style="display:block" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h3 class="modal-title">Edit User</h3>
-                                <!-- Button to close the popup -->
+                                <h3 class="modal-title">Edycja użytkownika</h3>
+
                                 <button type="button" class="close"
                                         @onclick="ClosePopup">
                                     <span aria-hidden="true">X</span>
                                 </button>
                             </div>
-                            <!-- Edit form for the current user -->
+
                             <div class="modal-body">
-                                <!-- Only show Id if not a new user -->
                                 @if (objUser.Id != "")
                                 {
                                     <p>@objUser.Id</p>
                                 }
-                                <!-- Only allow edit if a new user -->
                                 @if (objUser.Id != "")
                                 {
                                     <p>@objUser.UserName</p>
@@ -90,18 +87,16 @@
                                     }
                                 </select>
                                 <br /><br />
-                                <!-- Button to save the user -->
+
                                 <button class="btn btn-primary"
                                         @onclick="SaveUser">
                                     Save
                                 </button>
-                                <!-- Only show delete button if not a new record -->
                                 @if (objUser.Id != "")
                                 {
-                                    <!-- Button to delete the forecast -->
                                     <button class="btn btn-danger"
                                             @onclick="DeleteUser">
-                                        Delete
+                                        Usuń
                                     </button>
                                 }
                                 <br />
@@ -125,30 +120,36 @@
 </AuthorizeView>
 
 @code {
-    // Property used to add or edit the currently selected user
     IdentityUser objUser = new IdentityUser();
-    // Tracks the selected role for the currently selected user
     string CurrentUserRole { get; set; } = "Users";
-    // Collection to display the existing users
     List<IdentityUser> ColUsers = new List<IdentityUser>();
-    // Options to display in the roles dropdown when editing a user
-    List<string> Options = new List<string>() { "Users", "Administrators" };
-    // To hold any possible errors
+    List<string> Options = new List<string>() { "Student", "Lecturer", "Administrators" };
     string strError = "";
-    // To enable showing the Popup
     bool ShowPopup = false;
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
     string ADMINISTRATION_ROLE = "Administrators";
+    string LECTURER_ROLE = "Lecturer";
+    string STUDENT_ROLE = "Student";
     System.Security.Claims.ClaimsPrincipal CurrentUser;
 
     protected override async Task OnInitializedAsync()
     {
-        var RoleResult = await _RoleManager.FindByNameAsync(ADMINISTRATION_ROLE);
-        if (RoleResult == null)
+        IdentityRole RoleResultAdmin = await _RoleManager.FindByNameAsync(ADMINISTRATION_ROLE);
+        IdentityRole RoleResultLecturer = await _RoleManager.FindByNameAsync(LECTURER_ROLE);
+        IdentityRole RoleResultStudent = await _RoleManager.FindByNameAsync(STUDENT_ROLE);
+        if (RoleResultAdmin == null)
         {
             await _RoleManager.CreateAsync(new IdentityRole(ADMINISTRATION_ROLE));
+        }
+        else if(RoleResultLecturer == null)
+        {
+            await _RoleManager.CreateAsync(new IdentityRole(LECTURER_ROLE));
+        }
+        else if(RoleResultStudent == null)
+        {
+            await _RoleManager.CreateAsync(new IdentityRole(STUDENT_ROLE));
         }
 
         var user = await _UserManager.FindByNameAsync("przemyslawcukierski98@gmail.com");
@@ -161,35 +162,29 @@
             }
         }
         CurrentUser = (await authenticationStateTask).User;
-        // Get the users
+
         GetUsers();
     }
 
     void AddNewUser()
     {
-        // Make new user
         objUser = new IdentityUser();
         objUser.PasswordHash = "*****";
-        // Set Id to blank so we know it is a new record
         objUser.Id = "";
-        // Open the Popup
+
         ShowPopup = true;
     }
     async Task SaveUser()
     {
         try
         {
-            // Is this an existing user?
             if (objUser.Id != "")
             {
-                // Get the user
                 var user = await _UserManager.FindByIdAsync(objUser.Id);
-                // Update Email
                 user.Email = objUser.Email;
-                // Update the user
+
                 await _UserManager.UpdateAsync(user);
-                // Only update password if the current value
-                // is not the default value
+
                 if (objUser.PasswordHash != "*****")
                 {
                     var resetToken =
@@ -213,86 +208,74 @@
                         {
                             strError = "Pasword error";
                         }
-                        // Keep the popup opened
                         return;
                     }
                 }
-                // Handle Roles
-                // Is user in administrator role?
+
                 var UserResult =
                     await _UserManager
                     .IsInRoleAsync(user, ADMINISTRATION_ROLE);
-                // Is Administrator role selected 
-                // but user is not an Administrator?
-                if (
-                    (CurrentUserRole == ADMINISTRATION_ROLE)
-                    &
-                    (!UserResult))
+
+                // w tym miejscu zmiana!!!
+                if ((CurrentUserRole == ADMINISTRATION_ROLE) & (!UserResult))
                 {
-                    // Put admin in Administrator role
-                    await _UserManager
-                        .AddToRoleAsync(user, ADMINISTRATION_ROLE);
+                    await _UserManager.AddToRoleAsync(user, ADMINISTRATION_ROLE);
+                }
+                else if((CurrentUserRole == LECTURER_ROLE) & (!UserResult))
+                {
+                    await _UserManager.AddToRoleAsync(user, LECTURER_ROLE);
+                }
+                else if ((CurrentUserRole == STUDENT_ROLE) & (!UserResult))
+                {
+                    await _UserManager.AddToRoleAsync(user, STUDENT_ROLE);
                 }
                 else
                 {
-                    // Is Administrator role not selected 
-                    // but user is an Administrator?
-                    if ((CurrentUserRole != ADMINISTRATION_ROLE)
-                        &
-                        (UserResult))
+                    if ((CurrentUserRole != ADMINISTRATION_ROLE) & (UserResult))
                     {
-                        // Remove user from Administrator role
-                        await _UserManager
-                            .RemoveFromRoleAsync(user, ADMINISTRATION_ROLE);
+                        await _UserManager.RemoveFromRoleAsync(user, ADMINISTRATION_ROLE);
                     }
                 }
             }
             else
             {
-                // Insert new user
-                var NewUser =
-                    new IdentityUser
-                    {
-                        UserName = objUser.UserName,
-                        Email = objUser.Email,
-                        EmailConfirmed = true
-                    };
-                var CreateResult =
-                    await _UserManager
-                    .CreateAsync(NewUser, objUser.PasswordHash);
+                var NewUser = new IdentityUser {
+                    UserName = objUser.UserName,
+                    Email = objUser.Email,
+                    EmailConfirmed = true
+                };
+                var CreateResult = await _UserManager.CreateAsync(NewUser, objUser.PasswordHash);
                 if (!CreateResult.Succeeded)
                 {
-                    if (CreateResult
-                        .Errors
-                        .FirstOrDefault() != null)
+                    if (CreateResult.Errors.FirstOrDefault() != null)
                     {
-                        strError =
-                            CreateResult
-                            .Errors
-                            .FirstOrDefault()
-                            .Description;
+                        strError = CreateResult.Errors.FirstOrDefault().Description;
                     }
                     else
                     {
                         strError = "Create error";
                     }
-                    // Keep the popup opened
+
                     return;
                 }
                 else
                 {
-                    // Handle Roles
                     if (CurrentUserRole == ADMINISTRATION_ROLE)
                     {
-                        // Put admin in Administrator role
-                        await _UserManager
-                            .AddToRoleAsync(NewUser, ADMINISTRATION_ROLE);
+                        await _UserManager.AddToRoleAsync(NewUser, ADMINISTRATION_ROLE);
+                    }
+                    else if(CurrentUserRole == STUDENT_ROLE)
+                    {
+                        await _UserManager.AddToRoleAsync(NewUser, STUDENT_ROLE);
+                    }
+                    else if(CurrentUserRole == LECTURER_ROLE)
+                    {
+                        await _UserManager.AddToRoleAsync(NewUser, LECTURER_ROLE);
                     }
                 }
             }
-            // Close the Popup
             ShowPopup = false;
-            // Refresh Users
+
             GetUsers();
         }
         catch (Exception ex)
@@ -302,17 +285,11 @@
     }
     async Task EditUser(IdentityUser _IdentityUser)
     {
-        // Set the selected user
-        // as the current user
         objUser = _IdentityUser;
-        // Get the user
         var user = await _UserManager.FindByIdAsync(objUser.Id);
         if (user != null)
         {
-            // Is user in administrator role?
-            var UserResult =
-                await _UserManager
-                .IsInRoleAsync(user, ADMINISTRATION_ROLE);
+            var UserResult = await _UserManager.IsInRoleAsync(user, ADMINISTRATION_ROLE);
             if (UserResult)
             {
                 CurrentUserRole = ADMINISTRATION_ROLE;
@@ -322,36 +299,31 @@
                 CurrentUserRole = "Users";
             }
         }
-        // Open the Popup
+
         ShowPopup = true;
     }
     async Task DeleteUser()
     {
-        // Close the Popup
         ShowPopup = false;
-        // Get the user
+
         var user = await _UserManager.FindByIdAsync(objUser.Id);
         if (user != null)
         {
-            // Delete the user
             await _UserManager.DeleteAsync(user);
         }
-        // Refresh Users
+
         GetUsers();
     }
     void ClosePopup()
     {
-        // Close the Popup
         ShowPopup = false;
     }
 
     public void GetUsers()
     {
-        // clear any error messages
         strError = "";
-        // Collection to hold users
         ColUsers = new List<IdentityUser>();
-        // get users from _UserManager
+
         var user = _UserManager.Users.Select(x => new IdentityUser
         {
             Id = x.Id,
