@@ -43,7 +43,7 @@ namespace OnlineTesty_PracaInzynierska
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<EFDatabaseContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("EFDatabaseConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

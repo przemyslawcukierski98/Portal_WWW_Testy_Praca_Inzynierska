@@ -216,7 +216,6 @@
                     await _UserManager
                     .IsInRoleAsync(user, ADMINISTRATION_ROLE);
 
-                // w tym miejscu zmiana!!!
                 if ((CurrentUserRole == ADMINISTRATION_ROLE) & (!UserResult))
                 {
                     await _UserManager.AddToRoleAsync(user, ADMINISTRATION_ROLE);
