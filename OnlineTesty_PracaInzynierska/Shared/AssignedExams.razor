@@ -103,7 +103,7 @@
 
 <EditForm Model="@exam">
     <ul class="list">
-        @foreach (var exam in ExamsService.FindAssignedExams(nameFilter, groupFilter))
+        @foreach (var exam in ExamsService.FindAssignedExams(nameFilter, null, groupFilter))
         {
             <li class="group-record"><a href="/lecturer-exam-details/@exam.ID">@exam.Name</a></li>
         }

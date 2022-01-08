@@ -43,12 +43,12 @@ namespace OnlineTesty_Library.Repositories
         }
 
         // listy egzaminów dla wykładowcy i studenta
-        public IEnumerable<Exam> FindAssignedExams(string titleFilter, string groupFilter)
+        public IEnumerable<Exam> FindAssignedExams(string titleFilter, string studentFilter, string groupFilter)
         {
             IQueryable<Exam> assignedExams = Enumerable.Empty<Exam>().AsQueryable();
             var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
 
-            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, groupFilter, null);
+            ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, null, groupFilter);
 
             if (validation.TitleFilterIsFilled && validation.GroupFilterIsFilled)
             {
@@ -134,7 +134,7 @@ namespace OnlineTesty_Library.Repositories
         Guid Create(Exam model);
         string GetExamName(Guid? ID);
         void Delete(Guid? ID);
-        IEnumerable<Exam> FindAssignedExams(string nameFilter, string groupFilter);
+        IEnumerable<Exam> FindAssignedExams(string nameFilter, string studentFilter, string groupFilter);
         IEnumerable<Exam> FindAssignedExamsForStudent(string titleFilter, string lecturerFilter);
     }
 }
