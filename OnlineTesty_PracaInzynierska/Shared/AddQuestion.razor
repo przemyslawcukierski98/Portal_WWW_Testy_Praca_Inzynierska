@@ -78,27 +78,15 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Dodaj pytanie</button><br /><br />
-    <input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Zatwierdź nowy egzamin" @onclick="eventArgs => { CreateExamEnding(); }">
 </EditForm>
 
 @code {
 
     private ExamQuestion examQuestion = new ExamQuestion();
-    private InputText AnswerA;
-    private InputText AnswerB;
-    private InputText AnswerC;
-    private InputText AnswerD;
-    private int questionIdPom = 0;
-
-    protected EventCallback CreateExamEnding()
-    {
-        if(questionIdPom != 0)
-        {
-            NavigationManager.NavigateTo("main-page-lecturer");
-        }
-
-        return EventCallback.Empty;
-    }
+    private InputText AnswerA = new InputText();
+    private InputText AnswerB = new InputText();
+    private InputText AnswerC = new InputText();
+    private InputText AnswerD = new InputText();
 
     async Task SubmitExamQuestion()
     {
@@ -110,9 +98,7 @@
 
         examQuestion.ID = Guid.NewGuid();
         examQuestion.ExamID = await sessionStorage.GetItemAsync<Guid>("idExam");
-        examQuestion.Order = questionIdPom;
         var result = ExamQuestionsService.Create(examQuestion);
-        questionIdPom++;
 
         FieldsCleaning();
 

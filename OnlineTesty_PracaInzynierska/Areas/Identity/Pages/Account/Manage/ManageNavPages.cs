@@ -8,7 +8,7 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account.Manage
 {
     public static class ManageNavPages
     {
-        public static string Index => "Index";
+        public static string YourData => "YourData";
 
         public static string Email => "Email";
 
@@ -24,7 +24,7 @@ namespace OnlineTesty_PracaInzynierska.Areas.Identity.Pages.Account.Manage
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
-        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, YourData);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
