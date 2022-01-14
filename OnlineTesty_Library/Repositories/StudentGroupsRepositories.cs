@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
@@ -14,19 +15,19 @@ namespace OnlineTesty_Library.Repositories
 {
     public class StudentGroupsRepositories : BaseRepositoryEF, IStudentGroupsRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILogger<StudentGroupsRepositories> _logger;
 
-        public StudentGroupsRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+        public StudentGroupsRepositories(IUnitOfWork unitOfWork, AuthenticationStateProvider authenticationStateProvider,
             ILogger<StudentGroupsRepositories> logger) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _authenticationStateProvider = authenticationStateProvider;
             _logger = logger;
         }
 
         public Guid Create(StudentGroup model)
         {
-            var lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string lecturerEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             model.LecturerEmail = lecturerEmail;
             this.GetDbSet<StudentGroup>().Add(model);
@@ -60,7 +61,7 @@ namespace OnlineTesty_Library.Repositories
 
         public IEnumerable<StudentGroup> FindAllForLecturer()
         {
-            var lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string lecturerEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             _logger.LogInformation("Find all student groups for lecturer");
 
             return this.GetDbSet<StudentGroup>().Where(e => e.LecturerEmail == lecturerEmail);

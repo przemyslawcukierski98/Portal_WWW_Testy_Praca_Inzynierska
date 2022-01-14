@@ -57,7 +57,7 @@ namespace OnlineTesty_Library.Repositories
         public IEnumerable<ExamQuestion> ReadAllQuestionsByExam(Guid examId)
         {
             string examIdToUpper = examId.ToString().ToUpper();
-            IEnumerable<ExamQuestion> allExamQuestionsByExamId = GetDbSet<ExamQuestion>().Where(e => e.ExamID.ToString() == examIdToUpper).OrderBy(e => e.Order);
+            IEnumerable<ExamQuestion> allExamQuestionsByExamId = GetDbSet<ExamQuestion>().Where(e => e.ExamID.ToString() == examIdToUpper);
             return allExamQuestionsByExamId;
         }
 

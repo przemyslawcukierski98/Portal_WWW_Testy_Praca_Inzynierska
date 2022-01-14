@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
@@ -12,23 +13,23 @@ namespace OnlineTesty_Library.Repositories
 {
     public class StudentTestToBeSolvedRepositories : BaseRepositoryEF, IStudentTestToBeSolvedRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public StudentTestToBeSolvedRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        public StudentTestToBeSolvedRepositories(IUnitOfWork unitOfWork, AuthenticationStateProvider authenticationStateProvider) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public IEnumerable<StudentTestToBeSolved> FindSolutionsForStudent()
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             return this.GetDbSet<StudentTestToBeSolved>().Where(e => e.StudentEmail == userEmail);
         }
 
         public Guid SaveInfoAboutSolution(StudentTestToBeSolved model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             model.StudentEmail = userEmail;
             this.GetDbSet<StudentTestToBeSolved>().Add(model);

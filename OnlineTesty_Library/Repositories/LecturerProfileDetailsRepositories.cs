@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
@@ -12,16 +13,15 @@ namespace OnlineTesty_Library.Repositories
 {
     public class LecturerProfileDetailsRepositories : BaseRepositoryEF, ILecturerProfileDetailsRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public LecturerProfileDetailsRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        public LecturerProfileDetailsRepositories(IUnitOfWork unitOfWork, AuthenticationStateProvider authenticationStateProvider) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public Guid AssignProfileDetailsToLecturer(LecturerProfileDetails model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
-            model.EmailAddress = userEmail.Substring(67).Trim();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             this.GetDbSet<LecturerProfileDetails>().Add(model);
             this.UnitOfWork.SaveChanges();
@@ -47,7 +47,7 @@ namespace OnlineTesty_Library.Repositories
 
         public bool WhetherEmailIsInTheDb(LecturerProfileDetails model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             var allRecords = FindAll();
             bool emailIsInDatabase = false;
 

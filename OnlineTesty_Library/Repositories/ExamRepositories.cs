@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
@@ -12,22 +13,23 @@ namespace OnlineTesty_Library.Repositories
 {
     public class ExamRepositories : BaseRepositoryEF, IExamRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
         private readonly ILecturerProfileDetailsRepositories _lecturerProfileDetailsRepositories;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public ExamRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+        public ExamRepositories(IUnitOfWork unitOfWork, 
             IStudentAndGroupRepositories studentAndGroupRepositories,
-            ILecturerProfileDetailsRepositories lecturerProfileDetailsRepositories) : base(unitOfWork)
+            ILecturerProfileDetailsRepositories lecturerProfileDetailsRepositories,
+            AuthenticationStateProvider authenticationStateProvider) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
             _studentAndGroupRepositories = studentAndGroupRepositories;
             _lecturerProfileDetailsRepositories = lecturerProfileDetailsRepositories;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public Guid Create(Exam model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             this.GetDbSet<Exam>().Add(model);
             model.UserEmail = userEmail.Substring(67).Trim();
@@ -46,7 +48,7 @@ namespace OnlineTesty_Library.Repositories
         public IEnumerable<Exam> FindAssignedExams(string titleFilter, string studentFilter, string groupFilter)
         {
             IQueryable<Exam> assignedExams = Enumerable.Empty<Exam>().AsQueryable();
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             ValidationObject validation = ValidationMethods.ValidationForExams(titleFilter, null, groupFilter);
 
@@ -71,7 +73,7 @@ namespace OnlineTesty_Library.Repositories
         {
             IQueryable<Exam> assignedExams = Enumerable.Empty<Exam>().AsQueryable();
             LecturerProfileDetails lecturerProfileDetails = new LecturerProfileDetails();
-            string studentEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string studentEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             string lecturerEmail = string.Empty;
             var userDetails = _studentAndGroupRepositories.Read(studentEmail);
             List<Exam> emptylist = new List<Exam>();

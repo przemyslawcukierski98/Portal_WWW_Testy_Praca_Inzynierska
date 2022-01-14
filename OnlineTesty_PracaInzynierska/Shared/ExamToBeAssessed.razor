@@ -119,6 +119,7 @@
     private int pointsSum = 0;
     private int questionsCount = 0;
     private bool questionsAreChecked = false;
+    private bool solutionExist;
 
     [Parameter]
     public string GuidParam { get; set; }
@@ -132,16 +133,24 @@
         examQuestions = ExamQuestionService.ReadAllQuestionsByExam(ExamId);
 
         ExamId = solution.ExamId;
+        solutionExist = StudentTestSolutionService.IsThereSolution(ExamId, solution.StudentEmail);
 
-        answersCodesPom = solution.StudentAnswersCode.Split(separator);
-
-        // wydobycie kodów odpowiedzi studenta
-        for (int i = 0; i < answersCodesPom.Length - 1; i++)
+        if(solutionExist)
         {
-            char answerChar = answersCodesPom[i].Last();
-            studentAnswerCodes.Add(answerChar);
+            NavigationManager.NavigateTo("this-exam-is-evaluated");
+        }
+        else
+        {
+            answersCodesPom = solution.StudentAnswersCode.Split(separator);
 
-            questionsCount++;
+            // wydobycie kodów odpowiedzi studenta
+            for (int i = 0; i < answersCodesPom.Length - 1; i++)
+            {
+                char answerChar = answersCodesPom[i].Last();
+                studentAnswerCodes.Add(answerChar);
+
+                questionsCount++;
+            }
         }
     }
 

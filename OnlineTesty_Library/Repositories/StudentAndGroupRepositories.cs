@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
@@ -12,16 +13,16 @@ namespace OnlineTesty_Library.Repositories
 {
     public class StudentAndGroupRepositories : BaseRepositoryEF, IStudentAndGroupRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public StudentAndGroupRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork)
+        public StudentAndGroupRepositories(IUnitOfWork unitOfWork, AuthenticationStateProvider authenticationStateProvider) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _authenticationStateProvider = authenticationStateProvider;
         }
 
         public bool WhetherEmailIsInTheDb(StudentAndGroup model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             var allRecords = FindAll();
             bool emailIsInDatabase = false;
 
@@ -47,7 +48,7 @@ namespace OnlineTesty_Library.Repositories
 
         public Guid AssignStudentToGroup(StudentAndGroup model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             model.EmailAddress = userEmail.Substring(67).Trim();
 
             this.GetDbSet<StudentAndGroup>().Add(model);

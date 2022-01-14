@@ -19,6 +19,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Syncfusion.Blazor;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace OnlineTesty_PracaInzynierska
 {
@@ -49,6 +51,7 @@ namespace OnlineTesty_PracaInzynierska
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient<IExamRepositories, ExamRepositories>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using OnlineTesty_Library.Contexts;
 using OnlineTesty_Library.Models;
 using System;
@@ -12,19 +13,19 @@ namespace OnlineTesty_Library.Repositories
 {
     public class StudentTestSolutionRepositories : BaseRepositoryEF, IStudentTestSolutionRepositories
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly IStudentAndGroupRepositories _studentAndGroupRepositories;
 
-        public StudentTestSolutionRepositories(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor,
+        public StudentTestSolutionRepositories(IUnitOfWork unitOfWork, AuthenticationStateProvider authenticationStateProvider,
             IStudentAndGroupRepositories studentAndGroupRepositories) : base(unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _authenticationStateProvider = authenticationStateProvider;
             _studentAndGroupRepositories = studentAndGroupRepositories;
         }
 
         public Guid SaveExamSolution(StudentTestSolution model)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim(); 
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             model.StudentEmail = userEmail;
             this.GetDbSet<StudentTestSolution>().Add(model);
@@ -36,9 +37,9 @@ namespace OnlineTesty_Library.Repositories
         {
             IQueryable<StudentTestSolution> resolvedExams = Enumerable.Empty<StudentTestSolution>().AsQueryable();
             StudentAndGroup studentAndGroup = new StudentAndGroup();
-            string userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
             string studentEmail = string.Empty;
-            string lecturerEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).ToString().Substring(67).Trim();
+            string lecturerEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             if (titleFilter == null) titleFilter = string.Empty;
             if (studentFilter == null) studentFilter = string.Empty;
@@ -79,6 +80,20 @@ namespace OnlineTesty_Library.Repositories
             return this.GetDbSet<StudentTestSolution>()
                 .Where(e => e.ID == ID).FirstOrDefault();
         }
+
+        public bool IsThereSolution(Guid? ID, string userEmail)
+        {
+            var solutions = this.GetDbSet<StudentTestSolution>().Where(e => e.StudentEmail == userEmail);
+
+            if (solutions.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public interface IStudentTestSolutionRepositories
@@ -86,5 +101,6 @@ namespace OnlineTesty_Library.Repositories
         Guid SaveExamSolution(StudentTestSolution model);
         StudentTestSolution GetSolution(Guid? ID);
         IEnumerable<StudentTestSolution> FindResolvedExamsForLecturer(string titleFilter, string groupFilter, string studentFilter);
+        bool IsThereSolution(Guid? ID, string userEmail);
     }
 }
