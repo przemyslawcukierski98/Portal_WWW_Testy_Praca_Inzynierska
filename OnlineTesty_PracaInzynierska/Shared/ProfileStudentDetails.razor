@@ -2,6 +2,7 @@
 @inject OnlineTesty_Library.Repositories.IStudentGroupsRepositories StudentGroupsService
 @inject OnlineTesty_Library.Repositories.IStudentAndGroupRepositories StudentAndGroupService
 @inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
 
 @page "/profile-student-details"
 
@@ -53,5 +54,6 @@
     {
         var result = StudentAndGroupService.AssignStudentToGroup(studentAndGroup);
         await JsRuntime.InvokeVoidAsync("alert", "Student został dodany do grupy studenckiej");
+        NavigationManager.NavigateTo("assigned-exams");
     }
 }

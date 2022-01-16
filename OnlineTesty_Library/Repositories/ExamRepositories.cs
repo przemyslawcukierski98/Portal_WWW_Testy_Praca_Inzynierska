@@ -32,7 +32,7 @@ namespace OnlineTesty_Library.Repositories
             string userEmail = _authenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
 
             this.GetDbSet<Exam>().Add(model);
-            model.UserEmail = userEmail.Substring(67).Trim();
+            model.UserEmail = userEmail;
             this.UnitOfWork.SaveChanges();
             return model.ID;
         }

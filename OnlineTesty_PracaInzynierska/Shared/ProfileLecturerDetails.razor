@@ -1,6 +1,7 @@
 ﻿@using OnlineTesty_Library.Models
-@inject OnlineTesty_Library.Repositories.ILecturerProfileDetailsRepositories LecturerProfileDetailsService 
+@inject OnlineTesty_Library.Repositories.ILecturerProfileDetailsRepositories LecturerProfileDetailsService
 @inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
 
 @page "/profile-lecturer-details"
 
@@ -42,5 +43,6 @@
     {
         var result = LecturerProfileDetailsService.AssignProfileDetailsToLecturer(lecturerProfileDetails);
         await JsRuntime.InvokeVoidAsync("alert", "Dane wykładowcy zostały przypisane poprawnie do konta");
+        NavigationManager.NavigateTo("assigned-exams");
     }
 }

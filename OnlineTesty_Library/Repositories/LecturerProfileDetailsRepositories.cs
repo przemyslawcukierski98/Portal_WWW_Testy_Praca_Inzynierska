@@ -51,7 +51,7 @@ namespace OnlineTesty_Library.Repositories
             var allRecords = FindAll();
             bool emailIsInDatabase = false;
 
-            model.EmailAddress = userEmail.Substring(67).Trim();
+            model.EmailAddress = userEmail;
 
             foreach (var item in allRecords)
             {
