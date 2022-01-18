@@ -106,6 +106,21 @@ namespace OnlineTesty_Library.Repositories
             return evaluatedExams;
         }
 
+        public bool IsThereResult(Guid? ID, string userEmail)
+        {
+            var results = this.GetDbSet<StudentTestResult>().Where(e => e.StudentEmail == userEmail)
+                .Where(e => e.ExamId == ID);
+
+            if (results.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public StudentTestResult Read(Guid? ID)
         {
             return this.GetDbSet<StudentTestResult>()
@@ -124,6 +139,7 @@ namespace OnlineTesty_Library.Repositories
     {
         StudentTestResult Read(Guid? ID);
         Guid SaveExamResult(StudentTestResult model);
+        bool IsThereResult(Guid? ID, string userEmail);
         IEnumerable<StudentTestResult> FindEvaluatedExamsForStudent(string titleFilter, string lecturerFilter);
         IEnumerable<StudentTestResult> FindEvaluatedExamsForLecturer(string titleFilter, string studentFilter);
     }

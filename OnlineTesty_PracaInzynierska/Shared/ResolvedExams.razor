@@ -4,6 +4,9 @@
 @inject OnlineTesty_Library.Repositories.IExamRepositories ExamsService
 @inject OnlineTesty_Library.Repositories.IStudentTestSolutionRepositories StudentTestSolutionsService
 @inject Blazored.LocalStorage.ILocalStorageService sessionStorage
+
+@inject OnlineTesty_Library.Repositories.IExamQuestionsRepositories ExamQuestionsService
+
 @inject NavigationManager NavigationManager
 
 @attribute [Authorize(Roles = "Lecturer")]
@@ -102,7 +105,6 @@
 <input class="btnCreateExamEnding_style" type="button" name="btnCreateExamEnding" value="Filtruj" @onclick="eventArgs => { CreateFilter(); }">
 <br />
 <br />
-
 
 <EditForm Model="@solution">
     <ul class="list">

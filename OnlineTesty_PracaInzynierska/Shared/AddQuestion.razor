@@ -87,6 +87,7 @@
     private InputText AnswerB = new InputText();
     private InputText AnswerC = new InputText();
     private InputText AnswerD = new InputText();
+    private int examQuestionOrder = 0;
 
     async Task SubmitExamQuestion()
     {
@@ -98,9 +99,11 @@
 
         examQuestion.ID = Guid.NewGuid();
         examQuestion.ExamID = await sessionStorage.GetItemAsync<Guid>("idExam");
+        examQuestion.Order = examQuestionOrder;
         var result = ExamQuestionsService.Create(examQuestion);
 
         FieldsCleaning();
+        examQuestionOrder++;
 
         await JsRuntime.InvokeVoidAsync("alert", "Pytanie zostało dodane pomyślnie");
     }

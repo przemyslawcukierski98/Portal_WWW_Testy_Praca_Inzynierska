@@ -61,23 +61,25 @@
     <div>
         @foreach (var item in ExamQuestionService.ReadAllQuestionsByExam(ExamId))
         {
-            <ul class="list">
-                <li class="exam-question-record"><b>@item.Question</b></li>
-                <li class="exam-question-record">A: @item.AnswerA</li>
-                <li class="exam-question-record">B: @item.AnswerB</li>
-                <li class="exam-question-record">C: @item.AnswerC</li>
-                <li class="exam-question-record">D: @item.AnswerD</li>
-                <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
-                <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
+        <ul class="list">
+            <li class="exam-question-record"><b>@item.Question</b></li>
+            <li class="exam-question-record">A: @item.AnswerA</li>
+            <li class="exam-question-record">B: @item.AnswerB</li>
+            <li class="exam-question-record">C: @item.AnswerC</li>
+            <li class="exam-question-record">D: @item.AnswerD</li>
+            <li class="exam-question-record"><i>Poprawna odpowiedź: @item.CorrectAnswerChar</i></li>
+            <li class="exam-question-record"><i>Odpowiedź studenta: @studentAnswerCodes.ElementAt(item.Order)</i></li>
 
-                @if(item.CorrectAnswerChar.Equals(studentAnswerCodes.ElementAt(item.Order).ToString()) && questionsAreChecked == false)
-                {
-                    result.StudentNumberOfPoints++;
-                }
-            </ul>
+
+        @*if (item.CorrectAnswerChar.Equals(studentAnswerCodes.ElementAt(item.Order).ToString()) && questionsAreChecked == false)
+        {
+            result.StudentNumberOfPoints++;
+        }*@
+
+        </ul>
             <br /><br />
         }
-        @if(true)
+        @if (true)
         {
             questionsAreChecked = true;
         }
@@ -108,7 +110,7 @@
 
 @code {
     private Exam exam = new Exam();
-    private IEnumerable<ExamQuestion> examQuestions;
+    private IEnumerable<ExamQuestion> examQuestions = Enumerable.Empty<ExamQuestion>();
     private StudentAndGroup studentDetails = new StudentAndGroup();
     private StudentTestSolution solution = new StudentTestSolution();
     private StudentTestResult result = new StudentTestResult();
@@ -130,27 +132,25 @@
         solution = StudentTestSolutionService.GetSolution(Guid.Parse(GuidParam));
         exam = ExamService.Read(solution.ExamId);
         studentDetails = StudentAndGroupService.Read(solution.StudentEmail);
-        examQuestions = ExamQuestionService.ReadAllQuestionsByExam(ExamId);
+        examQuestions = ExamQuestionService.ReadAllQuestionsByExam(solution.ExamId);
 
         ExamId = solution.ExamId;
-        solutionExist = StudentTestSolutionService.IsThereSolution(ExamId, solution.StudentEmail);
+        solutionExist = StudentTestResultService.IsThereResult(ExamId, solution.StudentEmail);
 
-        if(solutionExist)
+        answersCodesPom = solution.StudentAnswersCode.Split(separator);
+
+        // wydobycie kodów odpowiedzi studenta
+        for (int i = 0; i < answersCodesPom.Length - 1; i++)
+        {
+            char answerChar = answersCodesPom[i].Last();
+            studentAnswerCodes.Add(answerChar);
+
+            questionsCount++;
+        }
+
+        if (solutionExist)
         {
             NavigationManager.NavigateTo("this-exam-is-evaluated");
-        }
-        else
-        {
-            answersCodesPom = solution.StudentAnswersCode.Split(separator);
-
-            // wydobycie kodów odpowiedzi studenta
-            for (int i = 0; i < answersCodesPom.Length - 1; i++)
-            {
-                char answerChar = answersCodesPom[i].Last();
-                studentAnswerCodes.Add(answerChar);
-
-                questionsCount++;
-            }
         }
     }
 
